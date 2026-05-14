@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-marketplace.json",
+  "name": "cypherpoet-skills-marketplace",
+  "description": "CypherPoet's catalog of Claude Code skill plugins.",
+  "owner": {
+    "name": "CypherPoet"
+  },
+  "plugins": [
+    {
+      "name": "cypherpoet-skills",
+      "source": {
+        "source": "github",
+        "repo": "CypherPoet/custom-agent-skills"
+      },
+      "description": "CypherPoet's open-source collection of Claude Code skills.",
+      "homepage": "https://github.com/CypherPoet/custom-agent-skills"
+    },
+    {
+      "name": "cypherpoet-skills-private",
+      "source": {
+        "source": "github",
+        "repo": "CypherPoet/private-custom-agent-skills"
+      },
+      "description": "CypherPoet's private collection of Claude Code skills (requires repo access).",
+      "homepage": "https://github.com/CypherPoet/private-custom-agent-skills"
+    }
+  ]
+}
