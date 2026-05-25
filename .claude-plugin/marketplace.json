@@ -1,28 +1,80 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-marketplace.json",
-  "name": "cypherpoet-skills-marketplace",
-  "description": "CypherPoet's catalog of Claude Code skill plugins.",
+  "name": "cypherpoet-toolchest",
+  "description": "A curated catalog of Claude Code plugins: agent tooling, dev workflow utilities, themed skill collections, and more.",
   "owner": {
     "name": "CypherPoet"
   },
   "plugins": [
     {
-      "name": "cypherpoet-skills",
+      "name": "cypherpoet-agent-tooling",
       "source": {
-        "source": "github",
-        "repo": "CypherPoet/custom-agent-skills"
+        "source": "git-subdir",
+        "url": "https://github.com/CypherPoet/custom-agent-skills.git",
+        "path": "plugins/cypherpoet-agent-tooling"
       },
-      "description": "CypherPoet's open-source collection of Claude Code skills.",
-      "homepage": "https://github.com/CypherPoet/custom-agent-skills"
+      "description": "Agent tooling for Claude Code workflow, memory, and docs.",
+      "homepage": "https://github.com/CypherPoet/custom-agent-skills/tree/main/plugins/cypherpoet-agent-tooling"
     },
     {
-      "name": "cypherpoet-skills-private",
+      "name": "cypherpoet-blender-kit",
       "source": {
-        "source": "github",
-        "repo": "CypherPoet/private-custom-agent-skills"
+        "source": "git-subdir",
+        "url": "https://github.com/CypherPoet/custom-agent-skills.git",
+        "path": "plugins/cypherpoet-blender-kit"
       },
-      "description": "CypherPoet's private collection of Claude Code skills (requires repo access).",
-      "homepage": "https://github.com/CypherPoet/private-custom-agent-skills"
+      "description": "Blender 3D modeling and MCP integration.",
+      "homepage": "https://github.com/CypherPoet/custom-agent-skills/tree/main/plugins/cypherpoet-blender-kit"
+    },
+    {
+      "name": "cypherpoet-expo-kit",
+      "source": {
+        "source": "git-subdir",
+        "url": "https://github.com/CypherPoet/custom-agent-skills.git",
+        "path": "plugins/cypherpoet-expo-kit"
+      },
+      "description": "Expo / React Native prototyping.",
+      "homepage": "https://github.com/CypherPoet/custom-agent-skills/tree/main/plugins/cypherpoet-expo-kit"
+    },
+    {
+      "name": "cypherpoet-git-flow",
+      "source": {
+        "source": "git-subdir",
+        "url": "https://github.com/CypherPoet/custom-agent-skills.git",
+        "path": "plugins/cypherpoet-git-flow"
+      },
+      "description": "Git commit and changelog hygiene.",
+      "homepage": "https://github.com/CypherPoet/custom-agent-skills/tree/main/plugins/cypherpoet-git-flow"
+    },
+    {
+      "name": "cypherpoet-mobile-dev",
+      "source": {
+        "source": "git-subdir",
+        "url": "https://github.com/CypherPoet/custom-agent-skills.git",
+        "path": "plugins/cypherpoet-mobile-dev"
+      },
+      "description": "iOS App Store publishing best practices.",
+      "homepage": "https://github.com/CypherPoet/custom-agent-skills/tree/main/plugins/cypherpoet-mobile-dev"
+    },
+    {
+      "name": "cypherpoet-svg-tools",
+      "source": {
+        "source": "git-subdir",
+        "url": "https://github.com/CypherPoet/custom-agent-skills.git",
+        "path": "plugins/cypherpoet-svg-tools"
+      },
+      "description": "SVG optimization and cleanup.",
+      "homepage": "https://github.com/CypherPoet/custom-agent-skills/tree/main/plugins/cypherpoet-svg-tools"
+    },
+    {
+      "name": "cypherpoet-threejs-kit",
+      "source": {
+        "source": "git-subdir",
+        "url": "https://github.com/CypherPoet/custom-agent-skills.git",
+        "path": "plugins/cypherpoet-threejs-kit"
+      },
+      "description": "Three.js / WebGPU / WebGL tooling.",
+      "homepage": "https://github.com/CypherPoet/custom-agent-skills/tree/main/plugins/cypherpoet-threejs-kit"
     }
   ]
 }
