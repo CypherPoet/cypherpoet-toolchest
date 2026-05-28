@@ -75,6 +75,16 @@
       },
       "description": "Three.js / WebGPU / WebGL tooling.",
       "homepage": "https://github.com/CypherPoet/custom-agent-skills/tree/main/plugins/cypherpoet-threejs-kit"
+    },
+    {
+      "name": "cypherpoet-webgl-kit",
+      "source": {
+        "source": "git-subdir",
+        "url": "https://github.com/CypherPoet/custom-agent-skills.git",
+        "path": "plugins/cypherpoet-webgl-kit"
+      },
+      "description": "Raw WebGL2 + GLSL shader tooling.",
+      "homepage": "https://github.com/CypherPoet/custom-agent-skills/tree/main/plugins/cypherpoet-webgl-kit"
     }
   ]
 }
