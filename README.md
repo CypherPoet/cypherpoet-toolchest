@@ -20,15 +20,20 @@ Then install your desired plugins:
 
 ## 📦 Plugins
 
-| Plugin                                                                                                                     | Catalog                                                                                                           | Description                                              |
-| -------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------- |
-| [`cypherpoet-agent-tooling`](https://github.com/CypherPoet/custom-agent-skills/tree/main/plugins/cypherpoet-agent-tooling) | [skills](https://github.com/CypherPoet/custom-agent-skills/blob/main/plugins/cypherpoet-agent-tooling/CATALOG.md) | Agent tooling for Claude Code workflow, memory, and docs |
-| [`cypherpoet-blender-kit`](https://github.com/CypherPoet/custom-agent-skills/tree/main/plugins/cypherpoet-blender-kit)     | [skills](https://github.com/CypherPoet/custom-agent-skills/blob/main/plugins/cypherpoet-blender-kit/CATALOG.md)   | Blender 3D modeling and MCP integration                  |
-| [`cypherpoet-expo-kit`](https://github.com/CypherPoet/custom-agent-skills/tree/main/plugins/cypherpoet-expo-kit)           | [skills](https://github.com/CypherPoet/custom-agent-skills/blob/main/plugins/cypherpoet-expo-kit/CATALOG.md)      | Expo / React Native prototyping                          |
-| [`cypherpoet-git-flow`](https://github.com/CypherPoet/custom-agent-skills/tree/main/plugins/cypherpoet-git-flow)           | [skills](https://github.com/CypherPoet/custom-agent-skills/blob/main/plugins/cypherpoet-git-flow/CATALOG.md)      | Git commit and changelog hygiene                         |
-| [`cypherpoet-mobile-dev`](https://github.com/CypherPoet/custom-agent-skills/tree/main/plugins/cypherpoet-mobile-dev)       | [skills](https://github.com/CypherPoet/custom-agent-skills/blob/main/plugins/cypherpoet-mobile-dev/CATALOG.md)    | iOS App Store publishing best practices                  |
-| [`cypherpoet-svg-tools`](https://github.com/CypherPoet/custom-agent-skills/tree/main/plugins/cypherpoet-svg-tools)         | [skills](https://github.com/CypherPoet/custom-agent-skills/blob/main/plugins/cypherpoet-svg-tools/CATALOG.md)     | SVG optimization and cleanup                             |
-| [`cypherpoet-threejs-kit`](https://github.com/CypherPoet/custom-agent-skills/tree/main/plugins/cypherpoet-threejs-kit)     | [skills](https://github.com/CypherPoet/custom-agent-skills/blob/main/plugins/cypherpoet-threejs-kit/CATALOG.md)   | Three.js / WebGPU / WebGL tooling                        |
+<!-- BEGIN:PLUGINS-TABLE (generated from .claude-plugin/marketplace.json — edit that file, not this table) -->
+
+| Plugin | Description |
+| --- | --- |
+| [`cypherpoet-agent-tooling`](https://github.com/CypherPoet/custom-agent-skills/tree/main/plugins/cypherpoet-agent-tooling) | Agent tooling for Claude Code workflow, memory, and docs |
+| [`cypherpoet-blender-kit`](https://github.com/CypherPoet/custom-agent-skills/tree/main/plugins/cypherpoet-blender-kit) | Blender 3D modeling and MCP integration |
+| [`cypherpoet-expo-kit`](https://github.com/CypherPoet/custom-agent-skills/tree/main/plugins/cypherpoet-expo-kit) | Expo / React Native prototyping |
+| [`cypherpoet-git-flow`](https://github.com/CypherPoet/custom-agent-skills/tree/main/plugins/cypherpoet-git-flow) | Git commit and changelog hygiene |
+| [`cypherpoet-mobile-dev`](https://github.com/CypherPoet/custom-agent-skills/tree/main/plugins/cypherpoet-mobile-dev) | iOS App Store publishing best practices |
+| [`cypherpoet-svg-tools`](https://github.com/CypherPoet/custom-agent-skills/tree/main/plugins/cypherpoet-svg-tools) | SVG optimization and cleanup |
+| [`cypherpoet-threejs-kit`](https://github.com/CypherPoet/custom-agent-skills/tree/main/plugins/cypherpoet-threejs-kit) | Three.js / WebGPU / WebGL tooling |
+| [`cypherpoet-webgl-kit`](https://github.com/CypherPoet/custom-agent-skills/tree/main/plugins/cypherpoet-webgl-kit) | Raw WebGL2 + GLSL shader tooling |
+
+<!-- END:PLUGINS-TABLE -->
 
 ## 🧭 How a typical install resolves
 
@@ -48,9 +53,13 @@ This means **plugin content updates reach consumers automatically** — no catal
 
 This catalog is maintained largely via updates from downstream repos. The [`custom-agent-skills`](https://github.com/CypherPoet/custom-agent-skills) repo, for example, run its **`marketplace-publish`** skill to open a PR here that adds or updates a single plugin's entry, and its **`marketplace-sync-check`** skill to audit which plugins are/aren't listed.
 
+The **Plugins** table above is generated from `marketplace.json` — don't edit it by hand. Run `node scripts/sync-readme-table.mjs` to regenerate it (add `--check` to verify it's in sync without writing). A scheduled **catalog-sync [routine](https://code.claude.com/docs/en/routines)** runs this script as part of detecting newly published plugins and opening a sync PR, so the catalog and table stay current without manual upkeep.
+
 ```
 ├── .claude-plugin/
-│   └── marketplace.json  # catalog of plugins
+│   └── marketplace.json       # catalog of plugins (source of truth)
+├── scripts/
+│   └── sync-readme-table.mjs  # regenerates the Plugins table from marketplace.json (supports --check)
 └── README.md
 ```
 
