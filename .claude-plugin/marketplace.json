@@ -17,6 +17,16 @@
       "homepage": "https://github.com/CypherPoet/custom-agent-skills/tree/main/plugins/cypherpoet-agent-tooling"
     },
     {
+      "name": "cypherpoet-apple-app-store-screenshots",
+      "source": {
+        "source": "git-subdir",
+        "url": "https://github.com/CypherPoet/custom-agent-skills.git",
+        "path": "plugins/cypherpoet-apple-app-store-screenshots"
+      },
+      "description": "Apple App Store screenshot and app preview specifications.",
+      "homepage": "https://github.com/CypherPoet/custom-agent-skills/tree/main/plugins/cypherpoet-apple-app-store-screenshots"
+    },
+    {
       "name": "cypherpoet-blender-kit",
       "source": {
         "source": "git-subdir",
