@@ -23,7 +23,7 @@
         "url": "https://github.com/CypherPoet/custom-agent-skills.git",
         "path": "plugins/cypherpoet-app-store-connect-kit"
       },
-      "description": "Hands-on App Store Connect submission workflow + console navigation: the mechanics of getting an Apple-platform app from built to Submitted for Review — prerequisites, build delivery (Xcode + Xcode Cloud), sandbox testing, and the UI gotchas Apple's docs skip.",
+      "description": "Hands-on App Store Connect submission workflow and console navigation.",
       "homepage": "https://github.com/CypherPoet/custom-agent-skills/tree/main/plugins/cypherpoet-app-store-connect-kit"
     },
     {
