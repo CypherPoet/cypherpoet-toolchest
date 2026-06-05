@@ -25,6 +25,7 @@ Then install your desired plugins:
 | Plugin | Description |
 | --- | --- |
 | [`cypherpoet-agent-tooling`](https://github.com/CypherPoet/custom-agent-skills/tree/main/plugins/cypherpoet-agent-tooling) | Agent tooling for Claude Code workflow, memory, and docs |
+| [`cypherpoet-app-store-connect-kit`](https://github.com/CypherPoet/custom-agent-skills/tree/main/plugins/cypherpoet-app-store-connect-kit) | Hands-on App Store Connect submission workflow + console navigation: the mechanics of getting an Apple-platform app from built to Submitted for Review — prerequisites, build delivery (Xcode + Xcode Cloud), sandbox testing, and the UI gotchas Apple's docs skip |
 | [`cypherpoet-apple-app-store-screenshots`](https://github.com/CypherPoet/custom-agent-skills/tree/main/plugins/cypherpoet-apple-app-store-screenshots) | Apple App Store screenshot and app preview specifications |
 | [`cypherpoet-blender-kit`](https://github.com/CypherPoet/custom-agent-skills/tree/main/plugins/cypherpoet-blender-kit) | Blender 3D modeling and MCP integration |
 | [`cypherpoet-expo-kit`](https://github.com/CypherPoet/custom-agent-skills/tree/main/plugins/cypherpoet-expo-kit) | Expo / React Native prototyping |
