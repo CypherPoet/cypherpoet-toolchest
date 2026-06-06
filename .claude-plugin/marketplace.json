@@ -77,6 +77,16 @@
       "homepage": "https://github.com/CypherPoet/custom-agent-skills/tree/main/plugins/cypherpoet-git-flow"
     },
     {
+      "name": "cypherpoet-marketplace-kit",
+      "source": {
+        "source": "git-subdir",
+        "url": "https://github.com/CypherPoet/custom-agent-skills.git",
+        "path": "plugins/cypherpoet-marketplace-kit"
+      },
+      "description": "Maintainer toolkit for running a Claude Code plugin marketplace — publish plugins, audit marketplace and catalog sync, regenerate the local catalog, and verify dependency-version tags.",
+      "homepage": "https://github.com/CypherPoet/custom-agent-skills/tree/main/plugins/cypherpoet-marketplace-kit"
+    },
+    {
       "name": "cypherpoet-mobile-dev",
       "source": {
         "source": "git-subdir",
