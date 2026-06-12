@@ -117,6 +117,16 @@
       "homepage": "https://github.com/CypherPoet/custom-agent-skills/tree/main/plugins/cypherpoet-svg-tools"
     },
     {
+      "name": "cypherpoet-swift-xcode-kit",
+      "source": {
+        "source": "git-subdir",
+        "url": "https://github.com/CypherPoet/custom-agent-skills.git",
+        "path": "plugins/cypherpoet-swift-xcode-kit"
+      },
+      "description": "Swift and Xcode development kit: SwiftUI best practices and 2027 SDK migration, UIKit multi-window modernization, XCTest-to-Swift-Testing migration, security-hardening audits of Xcode build settings, C -fbounds-safety guidance, and on-device/simulator UI verification.",
+      "homepage": "https://github.com/CypherPoet/custom-agent-skills/tree/main/plugins/cypherpoet-swift-xcode-kit"
+    },
+    {
       "name": "cypherpoet-threejs-kit",
       "source": {
         "source": "git-subdir",
