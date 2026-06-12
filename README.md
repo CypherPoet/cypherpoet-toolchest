@@ -35,6 +35,7 @@ Then install your desired plugins:
 | [`cypherpoet-mobile-dev`](https://github.com/CypherPoet/custom-agent-skills/tree/main/plugins/cypherpoet-mobile-dev) | iOS App Store publishing best practices |
 | [`cypherpoet-sf-symbols-kit`](https://github.com/CypherPoet/custom-agent-skills/tree/main/plugins/cypherpoet-sf-symbols-kit) | Apple SF Symbols end to end: find the right symbol with natural language, export clean recolorable SVGs at any of the 9 weights, browse an HTML gallery, build full icon sets, and convert your own SVG art into importable custom SF Symbol templates |
 | [`cypherpoet-svg-tools`](https://github.com/CypherPoet/custom-agent-skills/tree/main/plugins/cypherpoet-svg-tools) | SVG optimization and cleanup |
+| [`cypherpoet-swift-xcode-kit`](https://github.com/CypherPoet/custom-agent-skills/tree/main/plugins/cypherpoet-swift-xcode-kit) | Swift and Xcode development kit: SwiftUI best practices and 2027 SDK migration, UIKit multi-window modernization, XCTest-to-Swift-Testing migration, security-hardening audits of Xcode build settings, C -fbounds-safety guidance, and on-device/simulator UI verification |
 | [`cypherpoet-threejs-kit`](https://github.com/CypherPoet/custom-agent-skills/tree/main/plugins/cypherpoet-threejs-kit) | Three.js / WebGPU / WebGL tooling |
 | [`cypherpoet-webgl-kit`](https://github.com/CypherPoet/custom-agent-skills/tree/main/plugins/cypherpoet-webgl-kit) | Raw WebGL2 + GLSL shader tooling |
 
