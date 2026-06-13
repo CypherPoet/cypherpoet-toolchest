@@ -24,15 +24,19 @@ Then install your desired plugins:
 
 | Plugin | Description |
 | --- | --- |
-| [`cypherpoet-agent-tooling`](https://github.com/CypherPoet/custom-agent-skills/tree/main/plugins/cypherpoet-agent-tooling) | Agent tooling for Claude Code workflow, memory, and docs |
+| [`cypherpoet-agent-tooling`](https://github.com/CypherPoet/custom-agent-skills/tree/main/plugins/cypherpoet-agent-tooling) | Bundle of Claude Code agent-tooling plugins for docs search, memory consolidation, and session handoff/harvest |
 | [`cypherpoet-app-store-connect-kit`](https://github.com/CypherPoet/custom-agent-skills/tree/main/plugins/cypherpoet-app-store-connect-kit) | Hands-on App Store Connect submission workflow and console navigation |
 | [`cypherpoet-apple-app-icons`](https://github.com/CypherPoet/custom-agent-skills/tree/main/plugins/cypherpoet-apple-app-icons) | Apple app icons end to end: design one that converts in the App Store (tap-through, audit, A/B testing) and ship it correctly — Icon Composer Liquid Glass .icon plus an appiconset fallback for older OS versions |
 | [`cypherpoet-apple-app-store-screenshots`](https://github.com/CypherPoet/custom-agent-skills/tree/main/plugins/cypherpoet-apple-app-store-screenshots) | Apple App Store screenshot and app preview specifications |
 | [`cypherpoet-blender-kit`](https://github.com/CypherPoet/custom-agent-skills/tree/main/plugins/cypherpoet-blender-kit) | Blender 3D modeling and MCP integration |
+| [`cypherpoet-claude-docs-search`](https://github.com/CypherPoet/custom-agent-skills/tree/main/plugins/cypherpoet-claude-docs-search) | Look up answers about Claude Code features and behavior in the official Claude Code documentation |
+| [`cypherpoet-claude-memory-consolidation`](https://github.com/CypherPoet/custom-agent-skills/tree/main/plugins/cypherpoet-claude-memory-consolidation) | Audit and consolidate Claude's per-project auto-memory directory, deduping, repairing, and pruning with per-cluster approval |
 | [`cypherpoet-expo-kit`](https://github.com/CypherPoet/custom-agent-skills/tree/main/plugins/cypherpoet-expo-kit) | Expo / React Native prototyping |
 | [`cypherpoet-git-flow`](https://github.com/CypherPoet/custom-agent-skills/tree/main/plugins/cypherpoet-git-flow) | Git commit and changelog hygiene |
 | [`cypherpoet-marketplace-kit`](https://github.com/CypherPoet/custom-agent-skills/tree/main/plugins/cypherpoet-marketplace-kit) | Maintainer toolkit for running a Claude Code plugin marketplace — publish plugins, audit marketplace and catalog sync, regenerate the local catalog, and verify dependency-version tags |
 | [`cypherpoet-mobile-dev`](https://github.com/CypherPoet/custom-agent-skills/tree/main/plugins/cypherpoet-mobile-dev) | iOS App Store publishing best practices |
+| [`cypherpoet-session-handoff`](https://github.com/CypherPoet/custom-agent-skills/tree/main/plugins/cypherpoet-session-handoff) | Write a structured handoff document so a fresh agent can resume long-running work without losing context |
+| [`cypherpoet-session-harvest`](https://github.com/CypherPoet/custom-agent-skills/tree/main/plugins/cypherpoet-session-harvest) | Run a pre-exit sweep of a conversation for learnings worth preserving in project memory |
 | [`cypherpoet-sf-symbols-kit`](https://github.com/CypherPoet/custom-agent-skills/tree/main/plugins/cypherpoet-sf-symbols-kit) | Apple SF Symbols end to end: find the right symbol with natural language, export clean recolorable SVGs at any of the 9 weights, browse an HTML gallery, build full icon sets, and convert your own SVG art into importable custom SF Symbol templates |
 | [`cypherpoet-svg-tools`](https://github.com/CypherPoet/custom-agent-skills/tree/main/plugins/cypherpoet-svg-tools) | SVG optimization and cleanup |
 | [`cypherpoet-swift-xcode-kit`](https://github.com/CypherPoet/custom-agent-skills/tree/main/plugins/cypherpoet-swift-xcode-kit) | Swift and Xcode development kit: SwiftUI best practices and 2027 SDK migration, UIKit multi-window modernization, XCTest-to-Swift-Testing migration, security-hardening audits of Xcode build settings, C -fbounds-safety guidance, and on-device/simulator UI verification |
