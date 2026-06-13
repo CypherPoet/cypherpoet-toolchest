@@ -13,7 +13,7 @@
         "url": "https://github.com/CypherPoet/custom-agent-skills.git",
         "path": "plugins/cypherpoet-agent-tooling"
       },
-      "description": "Agent tooling for Claude Code workflow, memory, and docs.",
+      "description": "Bundle of Claude Code agent-tooling plugins for docs search, memory consolidation, and session handoff/harvest.",
       "homepage": "https://github.com/CypherPoet/custom-agent-skills/tree/main/plugins/cypherpoet-agent-tooling"
     },
     {
@@ -57,6 +57,26 @@
       "homepage": "https://github.com/CypherPoet/custom-agent-skills/tree/main/plugins/cypherpoet-blender-kit"
     },
     {
+      "name": "cypherpoet-claude-docs-search",
+      "source": {
+        "source": "git-subdir",
+        "url": "https://github.com/CypherPoet/custom-agent-skills.git",
+        "path": "plugins/cypherpoet-claude-docs-search"
+      },
+      "description": "Look up answers about Claude Code features and behavior in the official Claude Code documentation.",
+      "homepage": "https://github.com/CypherPoet/custom-agent-skills/tree/main/plugins/cypherpoet-claude-docs-search"
+    },
+    {
+      "name": "cypherpoet-claude-memory-consolidation",
+      "source": {
+        "source": "git-subdir",
+        "url": "https://github.com/CypherPoet/custom-agent-skills.git",
+        "path": "plugins/cypherpoet-claude-memory-consolidation"
+      },
+      "description": "Audit and consolidate Claude's per-project auto-memory directory, deduping, repairing, and pruning with per-cluster approval.",
+      "homepage": "https://github.com/CypherPoet/custom-agent-skills/tree/main/plugins/cypherpoet-claude-memory-consolidation"
+    },
+    {
       "name": "cypherpoet-expo-kit",
       "source": {
         "source": "git-subdir",
@@ -95,6 +115,26 @@
       },
       "description": "iOS App Store publishing best practices.",
       "homepage": "https://github.com/CypherPoet/custom-agent-skills/tree/main/plugins/cypherpoet-mobile-dev"
+    },
+    {
+      "name": "cypherpoet-session-handoff",
+      "source": {
+        "source": "git-subdir",
+        "url": "https://github.com/CypherPoet/custom-agent-skills.git",
+        "path": "plugins/cypherpoet-session-handoff"
+      },
+      "description": "Write a structured handoff document so a fresh agent can resume long-running work without losing context.",
+      "homepage": "https://github.com/CypherPoet/custom-agent-skills/tree/main/plugins/cypherpoet-session-handoff"
+    },
+    {
+      "name": "cypherpoet-session-harvest",
+      "source": {
+        "source": "git-subdir",
+        "url": "https://github.com/CypherPoet/custom-agent-skills.git",
+        "path": "plugins/cypherpoet-session-harvest"
+      },
+      "description": "Run a pre-exit sweep of a conversation for learnings worth preserving in project memory.",
+      "homepage": "https://github.com/CypherPoet/custom-agent-skills/tree/main/plugins/cypherpoet-session-harvest"
     },
     {
       "name": "cypherpoet-sf-symbols-kit",
