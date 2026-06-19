@@ -107,6 +107,16 @@
       "homepage": "https://github.com/CypherPoet/custom-agent-skills/tree/main/plugins/cypherpoet-git-flow"
     },
     {
+      "name": "cypherpoet-google-filament-kit",
+      "source": {
+        "source": "git-subdir",
+        "url": "https://github.com/CypherPoet/custom-agent-skills.git",
+        "path": "plugins/cypherpoet-google-filament-kit"
+      },
+      "description": "Comprehensive working knowledge of Google Filament, the real-time physically-based rendering engine — the PBR material model and lighting/IBL, the material definition language and matc compiler, the core engine API (Engine/Scene/View/Renderer/Camera, resources, gltfio), and per-binding setup for C++, Web (JS/WASM), and Android, distilled from the official documentation with a synced reference corpus that tracks Filament releases.",
+      "homepage": "https://github.com/CypherPoet/custom-agent-skills/tree/main/plugins/cypherpoet-google-filament-kit"
+    },
+    {
       "name": "cypherpoet-marketplace-kit",
       "source": {
         "source": "git-subdir",
@@ -143,7 +153,7 @@
         "url": "https://github.com/CypherPoet/custom-agent-skills.git",
         "path": "plugins/cypherpoet-session-harvest"
       },
-      "description": "Run a pre-exit sweep of a conversation for learnings worth preserving in project memory.",
+      "description": "Run a pre-exit sweep of a conversation for learnings worth preserving, routing each to its right home: a memory, or a suggested repo edit (CLAUDE.md/AGENTS.md, docs, or a hook).",
       "homepage": "https://github.com/CypherPoet/custom-agent-skills/tree/main/plugins/cypherpoet-session-harvest"
     },
     {
