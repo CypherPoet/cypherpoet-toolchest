@@ -67,6 +67,16 @@
       "homepage": "https://github.com/CypherPoet/custom-agent-skills/tree/main/plugins/cypherpoet-blender-kit"
     },
     {
+      "name": "cypherpoet-changelog-maintenance",
+      "source": {
+        "source": "git-subdir",
+        "url": "https://github.com/CypherPoet/custom-agent-skills.git",
+        "path": "plugins/cypherpoet-changelog-maintenance"
+      },
+      "description": "Maintain a project's CHANGELOG.md in Keep-a-Changelog format.",
+      "homepage": "https://github.com/CypherPoet/custom-agent-skills/tree/main/plugins/cypherpoet-changelog-maintenance"
+    },
+    {
       "name": "cypherpoet-claude-docs-search",
       "source": {
         "source": "git-subdir",
@@ -87,6 +97,16 @@
       "homepage": "https://github.com/CypherPoet/custom-agent-skills/tree/main/plugins/cypherpoet-claude-memory-consolidation"
     },
     {
+      "name": "cypherpoet-emoji-commits",
+      "source": {
+        "source": "git-subdir",
+        "url": "https://github.com/CypherPoet/custom-agent-skills.git",
+        "path": "plugins/cypherpoet-emoji-commits"
+      },
+      "description": "Write expressive git commit messages with Gitmoji.",
+      "homepage": "https://github.com/CypherPoet/custom-agent-skills/tree/main/plugins/cypherpoet-emoji-commits"
+    },
+    {
       "name": "cypherpoet-expo-kit",
       "source": {
         "source": "git-subdir",
@@ -103,7 +123,7 @@
         "url": "https://github.com/CypherPoet/custom-agent-skills.git",
         "path": "plugins/cypherpoet-git-flow"
       },
-      "description": "Git commit and changelog hygiene.",
+      "description": "Bundle of git commit and changelog hygiene plugins: emoji commits and changelog maintenance.",
       "homepage": "https://github.com/CypherPoet/custom-agent-skills/tree/main/plugins/cypherpoet-git-flow"
     },
     {
