@@ -157,6 +157,16 @@
       "homepage": "https://github.com/CypherPoet/custom-agent-skills/tree/main/plugins/cypherpoet-mobile-dev"
     },
     {
+      "name": "cypherpoet-react-three-fiber-kit",
+      "source": {
+        "source": "git-subdir",
+        "url": "https://github.com/CypherPoet/custom-agent-skills.git",
+        "path": "plugins/cypherpoet-react-three-fiber-kit"
+      },
+      "description": "React Three Fiber (R3F) + drei tooling for declarative Three.js in React.",
+      "homepage": "https://github.com/CypherPoet/custom-agent-skills/tree/main/plugins/cypherpoet-react-three-fiber-kit"
+    },
+    {
       "name": "cypherpoet-session-handoff",
       "source": {
         "source": "git-subdir",
