@@ -127,6 +127,16 @@
       "homepage": "https://github.com/CypherPoet/custom-agent-skills/tree/main/plugins/cypherpoet-git-flow"
     },
     {
+      "name": "cypherpoet-git-hygiene",
+      "source": {
+        "source": "git-subdir",
+        "url": "https://github.com/CypherPoet/custom-agent-skills.git",
+        "path": "plugins/cypherpoet-git-hygiene"
+      },
+      "description": "Keep local git state tidy: sync branches with the remote, and clean up stale branches and worktrees with per-item approval.",
+      "homepage": "https://github.com/CypherPoet/custom-agent-skills/tree/main/plugins/cypherpoet-git-hygiene"
+    },
+    {
       "name": "cypherpoet-google-filament-kit",
       "source": {
         "source": "git-subdir",
@@ -183,7 +193,7 @@
         "url": "https://github.com/CypherPoet/custom-agent-skills.git",
         "path": "plugins/cypherpoet-session-harvest"
       },
-      "description": "Run a pre-exit sweep of a conversation for learnings worth preserving, routing each to its right home: a memory, or a suggested repo edit (CLAUDE.md/AGENTS.md, docs, or a hook).",
+      "description": "Harvest a session's learnings into their right homes: a memory, a suggested repo edit (CLAUDE.md/AGENTS.md, docs, or a hook), or a PR that improves one of your own agent skills.",
       "homepage": "https://github.com/CypherPoet/custom-agent-skills/tree/main/plugins/cypherpoet-session-harvest"
     },
     {
