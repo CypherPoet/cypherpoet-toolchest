@@ -63,7 +63,7 @@
         "url": "https://github.com/CypherPoet/custom-agent-skills.git",
         "path": "plugins/cypherpoet-blender-kit"
       },
-      "description": "Blender 3D modeling and MCP integration.",
+      "description": "Blender mastery — modeling, materials, rigging, geometry nodes, rendering, and export via bpy, driven through the official Blender MCP server or the headless CLI.",
       "homepage": "https://github.com/CypherPoet/custom-agent-skills/tree/main/plugins/cypherpoet-blender-kit"
     },
     {
