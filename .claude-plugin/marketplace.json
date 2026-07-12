@@ -7,16 +7,6 @@
   },
   "plugins": [
     {
-      "name": "cypherpoet-agent-tooling",
-      "source": {
-        "source": "git-subdir",
-        "url": "https://github.com/CypherPoet/custom-agent-skills.git",
-        "path": "plugins/cypherpoet-agent-tooling"
-      },
-      "description": "Bundle of Claude Code agent-tooling plugins for docs search, memory consolidation, and session handoff/harvest.",
-      "homepage": "https://github.com/CypherPoet/custom-agent-skills/tree/main/plugins/cypherpoet-agent-tooling"
-    },
-    {
       "name": "cypherpoet-app-store-connect-kit",
       "source": {
         "source": "git-subdir",
@@ -163,7 +153,7 @@
         "url": "https://github.com/CypherPoet/custom-agent-skills.git",
         "path": "plugins/cypherpoet-marketplace-kit"
       },
-      "description": "Maintainer toolkit for running a Claude Code plugin marketplace — publish plugins, audit marketplace and catalog sync, regenerate the local catalog, and verify dependency-version tags.",
+      "description": "Maintainer toolkit for running a Claude Code plugin marketplace — publish plugins, audit marketplace and catalog sync, and regenerate the local catalog.",
       "homepage": "https://github.com/CypherPoet/custom-agent-skills/tree/main/plugins/cypherpoet-marketplace-kit"
     },
     {
