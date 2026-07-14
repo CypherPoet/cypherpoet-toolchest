@@ -1,6 +1,6 @@
 # 💎 CypherPoet Toolchest
 
-A [Claude Code plugin marketplace](https://code.claude.com/docs/en/plugin-marketplaces) catalog of custom themed plugins — agent tooling, dev workflow utilities, and more. This repo holds only the catalog (`.claude-plugin/marketplace.json`); each plugin's source lives in a separate repo and is sparse-cloned on demand.
+A plugin marketplace of custom themed plugins — agent tooling, dev workflow utilities, and more — for both [Claude Code](https://code.claude.com/docs/en/plugin-marketplaces) and [Codex](https://learn.chatgpt.com/docs/build-plugins). This repo holds only the two catalog files — `.claude-plugin/marketplace.json` (Claude Code) and `.agents/plugins/marketplace.json` (Codex); each plugin's source lives in a separate repo and is sparse-cloned on demand.
 
 [![X](https://img.shields.io/badge/%40cypher__poet-000000?style=for-the-badge&logo=x&logoColor=white)](https://x.com/cypher_poet) [![PayPal](https://img.shields.io/badge/PayPal-003087?style=for-the-badge&logo=paypal&logoColor=white)](https://www.paypal.com/ncp/payment/L6M553P28YPDY) [![Cash App](https://img.shields.io/badge/Cash_App-00C244?style=for-the-badge&logo=cashapp&logoColor=white)](https://cash.app/$CypherPoet) [![Buy Me a Coffee](https://img.shields.io/badge/Buy_Me_a_Coffee-FFDD00?style=for-the-badge&logo=buymeacoffee&logoColor=000000)](https://buymeacoffee.com/cypherpoet)
 
@@ -18,13 +18,21 @@ Then install your desired plugins:
 /plugin install <plugin-name>@cypherpoet-toolchest
 ```
 
+Or inside Codex — the same repo carries the Codex catalog:
+
+```shell
+codex plugin marketplace add CypherPoet/cypherpoet-toolchest
+codex plugin add <plugin-name>@cypherpoet-toolchest
+```
+
+Claude-Code-specific plugins appear in the Claude catalog only.
+
 ## 📦 Plugins
 
 <!-- BEGIN:PLUGINS-TABLE (generated from .claude-plugin/marketplace.json — edit that file, not this table) -->
 
 | Plugin | Description |
 | --- | --- |
-| [`cypherpoet-agent-tooling`](https://github.com/CypherPoet/custom-agent-skills/tree/main/plugins/cypherpoet-agent-tooling) | Bundle of Claude Code agent-tooling plugins for docs search, memory consolidation, and session handoff/harvest |
 | [`cypherpoet-app-store-connect-kit`](https://github.com/CypherPoet/custom-agent-skills/tree/main/plugins/cypherpoet-app-store-connect-kit) | Hands-on App Store Connect submission workflow and console navigation |
 | [`cypherpoet-apple-app-icons`](https://github.com/CypherPoet/custom-agent-skills/tree/main/plugins/cypherpoet-apple-app-icons) | Apple app icons end to end: design one that converts in the App Store (tap-through, audit, A/B testing) and ship it correctly — Icon Composer Liquid Glass .icon plus an appiconset fallback for older OS versions |
 | [`cypherpoet-apple-app-store-screenshots`](https://github.com/CypherPoet/custom-agent-skills/tree/main/plugins/cypherpoet-apple-app-store-screenshots) | Apple App Store screenshot and app preview specifications |
@@ -39,7 +47,7 @@ Then install your desired plugins:
 | [`cypherpoet-git-flow`](https://github.com/CypherPoet/custom-agent-skills/tree/main/plugins/cypherpoet-git-flow) | Bundle of git commit and changelog hygiene plugins: emoji commits and changelog maintenance |
 | [`cypherpoet-git-hygiene`](https://github.com/CypherPoet/custom-agent-skills/tree/main/plugins/cypherpoet-git-hygiene) | Keep local git state tidy: sync branches with the remote, and clean up stale branches and worktrees with per-item approval |
 | [`cypherpoet-google-filament-kit`](https://github.com/CypherPoet/custom-agent-skills/tree/main/plugins/cypherpoet-google-filament-kit) | Comprehensive working knowledge of Google Filament, the real-time physically-based rendering engine — the PBR material model and lighting/IBL, the material definition language and matc compiler, the core engine API (Engine/Scene/View/Renderer/Camera, resources, gltfio), and per-binding setup for C++, Web (JS/WASM), and Android, distilled from the official documentation with a synced reference corpus that tracks Filament releases |
-| [`cypherpoet-marketplace-kit`](https://github.com/CypherPoet/custom-agent-skills/tree/main/plugins/cypherpoet-marketplace-kit) | Maintainer toolkit for running a Claude Code plugin marketplace — publish plugins, audit marketplace and catalog sync, regenerate the local catalog, and verify dependency-version tags |
+| [`cypherpoet-marketplace-kit`](https://github.com/CypherPoet/custom-agent-skills/tree/main/plugins/cypherpoet-marketplace-kit) | Maintainer toolkit for running a plugin marketplace with Claude Code and Codex catalogs — publish plugins, audit marketplace and catalog sync, and regenerate the local catalog |
 | [`cypherpoet-mobile-dev`](https://github.com/CypherPoet/custom-agent-skills/tree/main/plugins/cypherpoet-mobile-dev) | iOS App Store publishing best practices |
 | [`cypherpoet-react-three-fiber-kit`](https://github.com/CypherPoet/custom-agent-skills/tree/main/plugins/cypherpoet-react-three-fiber-kit) | React Three Fiber (R3F) + drei tooling for declarative Three.js in React |
 | [`cypherpoet-session-handoff`](https://github.com/CypherPoet/custom-agent-skills/tree/main/plugins/cypherpoet-session-handoff) | Write a structured handoff document so a fresh agent can resume long-running work without losing context |
@@ -60,27 +68,30 @@ Then install your desired plugins:
 
 ## 🔄 Update Model
 
-Plugins omit a fixed `version` in their `plugin.json`, so each commit to `main` in the source repo is a new version. Claude Code resolves the version to the current commit SHA when you `/plugin marketplace update` or when the background refresh fires.
+Plugins pin a `version` in their `plugin.json`, and that version is each harness's update cache key: content edits in a source repo reach **existing** installs when the plugin's `version` is bumped there (a fresh install always pulls the latest from the source repo's default branch).
 
-This means **plugin content updates reach consumers automatically** — no catalog change is needed when you edit a plugin's skills. The `marketplace.json` here only changes when a plugin is **added, removed, or has an update to one of its [entry fields](https://code.claude.com/docs/en/plugin-marketplaces#marketplace-schema) that the marketplace catalog cares about specifying**.
+Either way, **no catalog change here is needed for content edits**. The catalogs only change when a plugin is **added, removed, or has an update to one of its [entry fields](https://code.claude.com/docs/en/plugin-marketplaces#marketplace-schema)** — `name`/`description`/`homepage` on the Claude side; source, `category`, or `policy` on the Codex side.
 
 ## 🛠 Catalog Maintenance
 
 > This section is for the catalog maintainer. Plugin consumers don't need to read further.
 
-This catalog is maintained largely via updates from downstream repos. The [`custom-agent-skills`](https://github.com/CypherPoet/custom-agent-skills) repo, for example, run its **`marketplace-publish`** skill to open a PR here that adds or updates a single plugin's entry, and its **`marketplace-sync-check`** skill to audit which plugins are/aren't listed.
+This catalog is maintained largely via updates from downstream repos. The [`custom-agent-skills`](https://github.com/CypherPoet/custom-agent-skills) repo, for example, runs its **`marketplace-publish`** skill to open a PR here that adds or updates a plugin's entries in whichever catalogs list it (both for dual-harness plugins; the Claude catalog alone for Claude-Code-specific ones), and its **`marketplace-sync-check`** skill to audit which plugins are/aren't listed.
 
 The **Plugins** table above is generated from `marketplace.json` — don't edit it by hand. Run `node scripts/sync-readme-table.mjs` to regenerate it (add `--check` to verify it's in sync without writing). A scheduled **catalog-sync [routine](https://code.claude.com/docs/en/routines)** runs this script as part of detecting newly published plugins and opening a sync PR, so the catalog and table stay current without manual upkeep.
 
 ```
 ├── .claude-plugin/
-│   └── marketplace.json       # catalog of plugins (source of truth)
+│   └── marketplace.json       # Claude Code catalog
+├── .agents/
+│   └── plugins/
+│       └── marketplace.json   # Codex catalog
 ├── scripts/
-│   └── sync-readme-table.mjs  # regenerates the Plugins table from marketplace.json (supports --check)
+│   └── sync-readme-table.mjs  # regenerates the Plugins table from the Claude catalog (supports --check)
 └── README.md
 ```
 
-To remove a plugin: delete its entry from `plugins[]` in [`marketplace.json`](.claude-plugin/marketplace.json) and open a PR. Keep the array sorted by `name`.
+To remove a plugin: delete its entry from `plugins[]` in **both** catalog files — [`.claude-plugin/marketplace.json`](.claude-plugin/marketplace.json) and [`.agents/plugins/marketplace.json`](.agents/plugins/marketplace.json) — and open a PR (a plugin reclassified as Claude-only comes out of the Codex catalog alone). Keep both arrays sorted by `name`.
 
 ## 🪪 License
 
