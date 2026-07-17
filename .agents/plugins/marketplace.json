@@ -170,6 +170,20 @@
       "category": "Developer Tools"
     },
     {
+      "name": "cypherpoet-marketplace-kit",
+      "source": {
+        "source": "git-subdir",
+        "url": "https://github.com/CypherPoet/custom-agent-skills.git",
+        "path": "plugins/cypherpoet-marketplace-kit",
+        "ref": "main"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Developer Tools"
+    },
+    {
       "name": "cypherpoet-mobile-dev",
       "source": {
         "source": "git-subdir",
