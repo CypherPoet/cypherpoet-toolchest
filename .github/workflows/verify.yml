@@ -1,0 +1,49 @@
+name: Verify
+
+on:
+  pull_request:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 13 * * 1"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: verify-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  catalog-validation:
+    name: catalog-validation
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Check out catalog
+        uses: actions/checkout@v6
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: "24"
+          package-manager-cache: false
+
+      - name: Check out source repository
+        uses: actions/checkout@v6
+        with:
+          repository: CypherPoet/custom-agent-skills
+          ref: main
+          path: custom-agent-skills
+
+      - name: Run hermetic tests
+        run: npm test
+
+      - name: Check catalogs against source
+        run: npm run check -- --source-repo custom-agent-skills
+
+      - name: Install Claude Code validator
+        run: npm install --global @anthropic-ai/claude-code@2.1.212
+
+      - name: Validate Claude marketplace schema
+        run: claude plugin validate .

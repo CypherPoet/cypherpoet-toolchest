@@ -1,0 +1,12 @@
+{
+  "name": "cypherpoet-toolchest-catalog",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "check": "node scripts/check-catalogs.mjs",
+    "test": "node --test"
+  }
+}
