@@ -7,18 +7,29 @@ import {
   CLAUDE_CATALOG_PATH,
   CODEX_CATALOG_PATH,
   README_PATH,
+  readCatalogPlugins,
 } from "./catalog-health.mjs";
 
 const catalogRoot = dirname(dirname(fileURLToPath(import.meta.url)));
-const { plugins: claudePlugins } = JSON.parse(
-  readFileSync(join(catalogRoot, CLAUDE_CATALOG_PATH), "utf8"),
-);
-const { plugins: codexPlugins } = JSON.parse(
-  readFileSync(join(catalogRoot, CODEX_CATALOG_PATH), "utf8"),
-);
 const readmePath = join(catalogRoot, README_PATH);
-const readme = readFileSync(readmePath, "utf8");
-const next = buildReadme(readme, claudePlugins, codexPlugins);
+
+let readme;
+let next;
+try {
+  const claudePlugins = readCatalogPlugins(
+    join(catalogRoot, CLAUDE_CATALOG_PATH),
+    "Claude catalog",
+  );
+  const codexPlugins = readCatalogPlugins(
+    join(catalogRoot, CODEX_CATALOG_PATH),
+    "Codex catalog",
+  );
+  readme = readFileSync(readmePath, "utf8");
+  next = buildReadme(readme, claudePlugins, codexPlugins);
+} catch (error) {
+  console.error(error.message);
+  process.exit(1);
+}
 
 if (process.argv.includes("--check")) {
   if (next !== readme) {

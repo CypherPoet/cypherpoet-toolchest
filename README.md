@@ -82,16 +82,16 @@ The **Plugins** table above is generated from both marketplace catalogs — don'
 
 ### Local Verification
 
-The catalog health suite is dependency-free, requires Node 24, and runs independently of GitHub Actions. Give it an ordinary checkout of [`custom-agent-skills`](https://github.com/CypherPoet/custom-agent-skills); the checker reads only that filesystem path and the files in this repository.
+The catalog health suite requires Node 24 and runs independently of GitHub Actions. Give it an ordinary checkout of [`custom-agent-skills`](https://github.com/CypherPoet/custom-agent-skills); the checker reads only that filesystem path and the files in this repository.
 
 ```shell
+npm ci
 npm test
 npm run check -- --source-repo ../custom-agent-skills
-node scripts/sync-readme-table.mjs --check
-claude plugin validate .
+npx claude plugin validate .
 ```
 
-The same commands can run under any CI provider. The Claude CLI command retains the marketplace's harness-native schema validation; the Node suite covers the cross-repository catalog contract and README rendering.
+The same commands can run under any CI provider. The Claude CLI command (installed as a dev dependency) retains the marketplace's harness-native schema validation; the Node suite covers the cross-repository catalog contract and README rendering, including the README staleness check. Without a source checkout handy, `node scripts/sync-readme-table.mjs --check` runs the README staleness check on its own.
 
 ```
 ├── .agents/

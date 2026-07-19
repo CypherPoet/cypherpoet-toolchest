@@ -5,22 +5,20 @@ import { fileURLToPath } from "node:url";
 import { validateCatalogHealth } from "./catalog-health.mjs";
 
 function readSourceRepoArgument(arguments_) {
-  const sourceRepoIndexes = arguments_
-    .map((argument, index) => (argument === "--source-repo" ? index : -1))
-    .filter((index) => index !== -1);
+  let value;
+  if (arguments_.length === 1 && arguments_[0].startsWith("--source-repo=")) {
+    value = arguments_[0].slice("--source-repo=".length);
+  } else if (arguments_.length === 2 && arguments_[0] === "--source-repo") {
+    value = arguments_[1];
+  }
 
-  if (
-    sourceRepoIndexes.length !== 1 ||
-    arguments_.length !== 2 ||
-    sourceRepoIndexes[0] !== 0 ||
-    !arguments_[1]
-  ) {
+  if (!value) {
     throw new Error(
       "Usage: npm run check -- --source-repo <path-to-custom-agent-skills>",
     );
   }
 
-  return resolve(arguments_[1]);
+  return resolve(value);
 }
 
 let sourceRepo;

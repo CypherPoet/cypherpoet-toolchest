@@ -1,4 +1,4 @@
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 
 export const CLAUDE_CATALOG_PATH = ".claude-plugin/marketplace.json";
@@ -6,8 +6,17 @@ export const CODEX_CATALOG_PATH = ".agents/plugins/marketplace.json";
 export const README_PATH = "README.md";
 export const REGISTRY_PATH = "scripts/plugin-registry.json";
 
-const SOURCE_REPOSITORY_URL =
+// These constants are this repo's half of the contract that the source repo's
+// marketplace-publish skill writes (it resolves the default branch dynamically;
+// this checker pins it). If the source repository moves or renames its default
+// branch, update these together with that skill.
+export const SOURCE_REPOSITORY_URL =
   "https://github.com/CypherPoet/custom-agent-skills.git";
+export const SOURCE_DEFAULT_BRANCH = "main";
+export const EXPECTED_CODEX_POLICY = {
+  installation: "AVAILABLE",
+  authentication: "ON_INSTALL",
+};
 const TABLE_BEGIN = "<!-- BEGIN:PLUGINS-TABLE";
 const TABLE_END = "<!-- END:PLUGINS-TABLE -->";
 const PLUGIN_NAME_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
@@ -37,7 +46,11 @@ function readText(path, label, errors) {
 }
 
 function getPlugins(catalog, label, errors) {
+  if (catalog === undefined) {
+    return [];
+  }
   if (!isObject(catalog)) {
+    errors.push(`${label} must be a JSON object.`);
     return [];
   }
   if (!Array.isArray(catalog.plugins)) {
@@ -45,6 +58,29 @@ function getPlugins(catalog, label, errors) {
     return [];
   }
   return catalog.plugins;
+}
+
+export function readCatalogPlugins(path, label) {
+  let catalog;
+  try {
+    catalog = JSON.parse(readFileSync(path, "utf8"));
+  } catch (error) {
+    throw new Error(`${label} could not be read: ${error.message}`);
+  }
+  if (!isObject(catalog) || !Array.isArray(catalog.plugins)) {
+    throw new Error(`${label} must be a JSON object with a plugins array.`);
+  }
+  return catalog.plugins;
+}
+
+export function comparePluginNames(left, right) {
+  if (left < right) {
+    return -1;
+  }
+  if (left > right) {
+    return 1;
+  }
+  return 0;
 }
 
 function validateCatalogNames(plugins, label, errors) {
@@ -70,9 +106,7 @@ function validateCatalogNames(plugins, label, errors) {
     seen.add(name);
   }
 
-  const sortedNames = [...names].sort((left, right) =>
-    left.localeCompare(right),
-  );
+  const sortedNames = [...names].sort(comparePluginNames);
   if (names.some((name, index) => name !== sortedNames[index])) {
     errors.push(`${label} plugins must be sorted by name.`);
   }
@@ -94,7 +128,7 @@ function compareField(errors, label, actual, expected) {
   }
 }
 
-function validateSource(source, pluginName, requireMainRef, label, errors) {
+function validateSource(source, pluginName, requireRef, label, errors) {
   if (!isObject(source)) {
     errors.push(`${label} source must be an object.`);
     return;
@@ -113,13 +147,22 @@ function validateSource(source, pluginName, requireMainRef, label, errors) {
     source.path,
     `plugins/${pluginName}`,
   );
-  if (requireMainRef) {
-    compareField(errors, `${label} source.ref`, source.ref, "main");
+  if (requireRef || source.ref !== undefined) {
+    compareField(
+      errors,
+      `${label} source.ref`,
+      source.ref,
+      SOURCE_DEFAULT_BRANCH,
+    );
   }
 }
 
 function validateManifest(manifest, pluginName, label, errors) {
+  if (manifest === undefined) {
+    return;
+  }
   if (!isObject(manifest)) {
+    errors.push(`${label} must be a JSON object.`);
     return;
   }
 
@@ -141,15 +184,20 @@ function validateManifest(manifest, pluginName, label, errors) {
   }
 }
 
-function expectedHomepage(pluginName, manifest) {
+export function expectedHomepage(pluginName, manifest) {
   if (typeof manifest?.homepage === "string" && manifest.homepage.trim()) {
     return manifest.homepage;
   }
-  return `https://github.com/CypherPoet/custom-agent-skills/tree/main/plugins/${pluginName}`;
+  const repositoryPage = SOURCE_REPOSITORY_URL.replace(/\.git$/, "");
+  return `${repositoryPage}/tree/${SOURCE_DEFAULT_BRANCH}/plugins/${pluginName}`;
 }
 
 function validateRegistry(registry, errors) {
+  if (registry === undefined) {
+    return { claudeOnlyPlugins: {}, dualHarnessPlugins: {} };
+  }
   if (!isObject(registry)) {
+    errors.push("Source registry must be a JSON object.");
     return { claudeOnlyPlugins: {}, dualHarnessPlugins: {} };
   }
 
@@ -206,13 +254,41 @@ export function escapeMarkdownTableCell(value) {
     .replace(/\s*\r?\n\s*/g, " ");
 }
 
+// Spaces and parentheses terminate a Markdown link destination, so they must
+// be percent-encoded on top of the table-cell escapes.
+function escapeLinkDestination(url) {
+  return escapeMarkdownTableCell(url)
+    .replace(/ /g, "%20")
+    .replace(/\(/g, "%28")
+    .replace(/\)/g, "%29");
+}
+
 export function renderPluginTable(claudePlugins, codexPlugins) {
-  const codexNames = new Set(codexPlugins.map((plugin) => plugin.name));
+  for (const [index, plugin] of claudePlugins.entries()) {
+    if (!isObject(plugin) || typeof plugin.name !== "string" || !plugin.name) {
+      throw new Error(
+        `Claude catalog entry ${index + 1} must have a plugin name.`,
+      );
+    }
+    for (const field of ["description", "homepage"]) {
+      if (typeof plugin[field] !== "string" || !plugin[field].trim()) {
+        throw new Error(
+          `Claude catalog plugin "${plugin.name}" must have a ${field}.`,
+        );
+      }
+    }
+  }
+
+  const codexNames = new Set(
+    codexPlugins
+      .filter((plugin) => isObject(plugin) && typeof plugin.name === "string")
+      .map((plugin) => plugin.name),
+  );
   const rows = [...claudePlugins]
-    .sort((left, right) => left.name.localeCompare(right.name))
+    .sort((left, right) => comparePluginNames(left.name, right.name))
     .map((plugin) => {
       const name = escapeMarkdownTableCell(plugin.name);
-      const homepage = escapeMarkdownTableCell(plugin.homepage);
+      const homepage = escapeLinkDestination(plugin.homepage);
       const description = escapeMarkdownTableCell(
         plugin.description.replace(/\.$/, ""),
       );
@@ -267,11 +343,14 @@ export function validateCatalogHealth({ catalogRoot, sourceRepo }) {
     "Codex catalog",
     errors,
   );
-  const registry = readJson(
-    join(sourceRepo, REGISTRY_PATH),
-    "Source registry",
-    errors,
-  );
+  // A source repo without a registry file is a documented, valid state (see
+  // marketplace-sync-check): every plugin is Claude-only and the Codex catalog
+  // must be empty. Only a present-but-unreadable registry is an error.
+  const registryPath = join(sourceRepo, REGISTRY_PATH);
+  const registryPresent = existsSync(registryPath);
+  const registry = registryPresent
+    ? readJson(registryPath, "Source registry", errors)
+    : undefined;
   const readme = readText(join(catalogRoot, README_PATH), "README", errors);
 
   validateCatalogIdentity(claudeCatalog, "Claude catalog", errors);
@@ -296,9 +375,10 @@ export function validateCatalogHealth({ catalogRoot, sourceRepo }) {
     ...Object.keys(dualHarnessPlugins),
     ...Object.keys(claudeOnlyPlugins),
   ]);
+  const manifestNames = registryPresent ? classifiedNames : claudeNameSet;
   const claudeManifests = new Map();
 
-  for (const pluginName of [...classifiedNames].sort()) {
+  for (const pluginName of [...manifestNames].sort(comparePluginNames)) {
     const manifestRoot = join(sourceRepo, "plugins", pluginName);
     const claudeManifest = readJson(
       join(manifestRoot, ".claude-plugin/plugin.json"),
@@ -338,11 +418,13 @@ export function validateCatalogHealth({ catalogRoot, sourceRepo }) {
     }
   }
 
-  for (const pluginName of claudeNames) {
-    const isDualHarness = Object.hasOwn(dualHarnessPlugins, pluginName);
-    const isClaudeOnly = Object.hasOwn(claudeOnlyPlugins, pluginName);
-    if (!isDualHarness && !isClaudeOnly) {
-      errors.push(`Published Claude plugin "${pluginName}" is unclassified.`);
+  if (registryPresent) {
+    for (const pluginName of claudeNames) {
+      const isDualHarness = Object.hasOwn(dualHarnessPlugins, pluginName);
+      const isClaudeOnly = Object.hasOwn(claudeOnlyPlugins, pluginName);
+      if (!isDualHarness && !isClaudeOnly) {
+        errors.push(`Published Claude plugin "${pluginName}" is unclassified.`);
+      }
     }
   }
 
@@ -412,18 +494,23 @@ export function validateCatalogHealth({ catalogRoot, sourceRepo }) {
         errors,
         `${label} policy.installation`,
         plugin.policy.installation,
-        "AVAILABLE",
+        EXPECTED_CODEX_POLICY.installation,
       );
       compareField(
         errors,
         `${label} policy.authentication`,
         plugin.policy.authentication,
-        "ON_INSTALL",
+        EXPECTED_CODEX_POLICY.authentication,
       );
     }
   }
 
-  if (typeof readme === "string") {
+  // Only judge README staleness against catalogs that actually parsed into
+  // plugin arrays; otherwise the "regenerate" advice would point at inputs the
+  // writer cannot process.
+  const catalogsRenderable =
+    Array.isArray(claudeCatalog?.plugins) && Array.isArray(codexCatalog?.plugins);
+  if (typeof readme === "string" && catalogsRenderable) {
     try {
       const expectedReadme = buildReadme(readme, claudePlugins, codexPlugins);
       if (expectedReadme !== readme) {

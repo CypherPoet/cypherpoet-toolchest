@@ -21,29 +21,37 @@ jobs:
 
     steps:
       - name: Check out catalog
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Set up Node.js
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@v7
         with:
           node-version: "24"
-          package-manager-cache: false
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      # Tests run before the source checkout exists so nothing outside test/
+      # can ever be discovered by the test runner.
+      - name: Run hermetic tests
+        run: npm test
 
       - name: Check out source repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           repository: CypherPoet/custom-agent-skills
           ref: main
           path: custom-agent-skills
-
-      - name: Run hermetic tests
-        run: npm test
+          filter: blob:none
+          sparse-checkout: |
+            /scripts/
+            /plugins/*/.claude-plugin/
+            /plugins/*/.codex-plugin/
+          sparse-checkout-cone-mode: false
 
       - name: Check catalogs against source
         run: npm run check -- --source-repo custom-agent-skills
 
-      - name: Install Claude Code validator
-        run: npm install --global @anthropic-ai/claude-code@2.1.212
-
       - name: Validate Claude marketplace schema
-        run: claude plugin validate .
+        run: npx claude plugin validate .

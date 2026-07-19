@@ -8,23 +8,25 @@ import test from "node:test";
 
 import {
   buildReadme,
+  comparePluginNames,
+  EXPECTED_CODEX_POLICY,
+  expectedHomepage,
   renderPluginTable,
+  SOURCE_DEFAULT_BRANCH,
+  SOURCE_REPOSITORY_URL,
   validateCatalogHealth,
 } from "../scripts/catalog-health.mjs";
 
-const SOURCE_URL =
-  "https://github.com/CypherPoet/custom-agent-skills.git";
-
 function fallbackHomepage(name) {
-  return `https://github.com/CypherPoet/custom-agent-skills/tree/main/plugins/${name}`;
+  return expectedHomepage(name, undefined);
 }
 
 function sourceFor(name, includeRef = false) {
   return {
     source: "git-subdir",
-    url: SOURCE_URL,
+    url: SOURCE_REPOSITORY_URL,
     path: `plugins/${name}`,
-    ...(includeRef ? { ref: "main" } : {}),
+    ...(includeRef ? { ref: SOURCE_DEFAULT_BRANCH } : {}),
   };
 }
 
@@ -32,10 +34,7 @@ function codexEntry(name, category = "Developer Tools") {
   return {
     name,
     source: sourceFor(name, true),
-    policy: {
-      installation: "AVAILABLE",
-      authentication: "ON_INSTALL",
-    },
+    policy: { ...EXPECTED_CODEX_POLICY },
     category,
   };
 }
@@ -240,7 +239,9 @@ test("reports missing and extra Codex entries", async (t) => {
     const catalog = await readJson(fixture.codexCatalogPath);
     const extraName = fixture.claudeOnlyNames[0];
     catalog.plugins.push(codexEntry(extraName));
-    catalog.plugins.sort((left, right) => left.name.localeCompare(right.name));
+    catalog.plugins.sort((left, right) =>
+      comparePluginNames(left.name, right.name),
+    );
     await writeJson(fixture.codexCatalogPath, catalog);
     await refreshReadme(fixture);
 
@@ -329,13 +330,83 @@ test("reports a stale README table", async (t) => {
   );
 });
 
-test("escapes Markdown table delimiters", () => {
+test("reports structurally invalid catalogs and manifests", async (t) => {
+  await t.test("non-object catalog", async (t) => {
+    const fixture = await createFixture(t);
+    await writeFile(fixture.claudeCatalogPath, "[]\n");
+
+    const errors = validate(fixture).errors;
+    assert.ok(errors.includes("Claude catalog must be a JSON object."));
+  });
+
+  await t.test("missing plugins array without claiming README drift", async (t) => {
+    const fixture = await createFixture(t);
+    await writeJson(fixture.claudeCatalogPath, { name: "cypherpoet-toolchest" });
+
+    const errors = validate(fixture).errors;
+    assert.ok(errors.includes("Claude catalog must contain a plugins array."));
+    assert.ok(
+      !errors.some((error) => error.includes("README plugins table is out of sync")),
+    );
+  });
+
+  await t.test("non-object source manifest", async (t) => {
+    const fixture = await createFixture(t);
+    const manifestPath = join(
+      fixture.sourceRepo,
+      "plugins",
+      fixture.dualNames[0],
+      ".claude-plugin/plugin.json",
+    );
+    await writeFile(manifestPath, "null\n");
+
+    assert.ok(
+      validate(fixture).errors.includes(
+        `Claude source manifest for "${fixture.dualNames[0]}" must be a JSON object.`,
+      ),
+    );
+  });
+});
+
+test("reports a Claude catalog entry pinned to a non-default ref", async (t) => {
+  const fixture = await createFixture(t);
+  const catalog = await readJson(fixture.claudeCatalogPath);
+  catalog.plugins[0].source.ref = "develop";
+  await writeJson(fixture.claudeCatalogPath, catalog);
+
+  assert.ok(
+    validate(fixture).errors.some((error) =>
+      /Claude catalog plugin .* source\.ref/.test(error),
+    ),
+  );
+});
+
+test("accepts a registry-less source repo as all Claude-only", async (t) => {
+  const fixture = await createFixture(t);
+  await rm(fixture.registryPath);
+  await writeJson(fixture.codexCatalogPath, {
+    name: "cypherpoet-toolchest",
+    plugins: [],
+  });
+  await refreshReadme(fixture);
+
+  const result = validate(fixture);
+  assert.deepEqual(result.errors, []);
+  assert.deepEqual(result.counts, { claude: 24, codex: 0 });
+});
+
+test("escapes Markdown table delimiters and link-breaking URL characters", () => {
   const table = renderPluginTable(
     [
       {
         name: "example-plugin",
         homepage: "https://example.com/a|b",
         description: "A | B \\ C.",
+      },
+      {
+        name: "other-plugin",
+        homepage: "https://example.com/docs (beta)",
+        description: "D.",
       },
     ],
     [],
@@ -344,14 +415,46 @@ test("escapes Markdown table delimiters", () => {
   assert.match(table, /https:\/\/example\.com\/a\\\|b/);
   assert.match(table, /A \\\| B \\\\ C/);
   assert.match(table, /\| ✅ \| — \|/);
+  assert.match(table, /https:\/\/example\.com\/docs%20%28beta%29/);
 });
 
-test("the check command requires an explicit source checkout", () => {
+test("names the offending entry when the table cannot be rendered", () => {
+  assert.throws(
+    () => renderPluginTable([{ name: "x-plugin", homepage: "https://e.com" }], []),
+    /Claude catalog plugin "x-plugin" must have a description\./,
+  );
+  assert.throws(
+    () => renderPluginTable([{ name: "x-plugin", description: "D." }], []),
+    /Claude catalog plugin "x-plugin" must have a homepage\./,
+  );
+  assert.throws(
+    () => renderPluginTable([null], []),
+    /Claude catalog entry 1 must have a plugin name\./,
+  );
+});
+
+test("the check command requires an explicit source checkout", async (t) => {
   const scriptPath = fileURLToPath(
     new URL("../scripts/check-catalogs.mjs", import.meta.url),
   );
-  const result = spawnSync(process.execPath, [scriptPath], { encoding: "utf8" });
 
-  assert.equal(result.status, 2);
-  assert.match(result.stderr, /--source-repo/);
+  await t.test("no arguments", () => {
+    const result = spawnSync(process.execPath, [scriptPath], {
+      encoding: "utf8",
+    });
+
+    assert.equal(result.status, 2);
+    assert.match(result.stderr, /--source-repo/);
+  });
+
+  await t.test("equals form is accepted", () => {
+    const result = spawnSync(
+      process.execPath,
+      [scriptPath, "--source-repo=/nonexistent-source-checkout"],
+      { encoding: "utf8" },
+    );
+
+    assert.equal(result.status, 2);
+    assert.match(result.stderr, /not a directory/);
+  });
 });
