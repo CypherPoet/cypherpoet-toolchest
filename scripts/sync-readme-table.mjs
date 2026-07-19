@@ -1,33 +1,35 @@
-// Regenerates the Plugins table in README.md from .claude-plugin/marketplace.json,
-// the single source of truth. Run with no args to rewrite the table, or with --check
-// to exit non-zero when the table is out of sync (for CI / pre-commit use).
 import { readFileSync, writeFileSync } from "node:fs";
+import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
 
-const BEGIN = "<!-- BEGIN:PLUGINS-TABLE";
-const END = "<!-- END:PLUGINS-TABLE -->";
+import {
+  buildReadme,
+  CLAUDE_CATALOG_PATH,
+  CODEX_CATALOG_PATH,
+  README_PATH,
+  readCatalogPlugins,
+} from "./catalog-health.mjs";
 
-const { plugins } = JSON.parse(
-  readFileSync(".claude-plugin/marketplace.json", "utf8"),
-);
+const catalogRoot = dirname(dirname(fileURLToPath(import.meta.url)));
+const readmePath = join(catalogRoot, README_PATH);
 
-const rows = [...plugins]
-  .sort((a, b) => a.name.localeCompare(b.name))
-  .map(
-    (plugin) =>
-      `| [\`${plugin.name}\`](${plugin.homepage}) | ${plugin.description.replace(/\.$/, "")} |`,
+let readme;
+let next;
+try {
+  const claudePlugins = readCatalogPlugins(
+    join(catalogRoot, CLAUDE_CATALOG_PATH),
+    "Claude catalog",
   );
-
-const table = ["| Plugin | Description |", "| --- | --- |", ...rows].join("\n");
-
-const readme = readFileSync("README.md", "utf8");
-const begin = readme.indexOf(BEGIN);
-const end = readme.indexOf(END);
-if (begin === -1 || end === -1) {
-  throw new Error("PLUGINS-TABLE markers not found in README.md");
+  const codexPlugins = readCatalogPlugins(
+    join(catalogRoot, CODEX_CATALOG_PATH),
+    "Codex catalog",
+  );
+  readme = readFileSync(readmePath, "utf8");
+  next = buildReadme(readme, claudePlugins, codexPlugins);
+} catch (error) {
+  console.error(error.message);
+  process.exit(1);
 }
-const afterBeginLine = readme.indexOf("\n", begin) + 1;
-const next =
-  readme.slice(0, afterBeginLine) + "\n" + table + "\n\n" + readme.slice(end);
 
 if (process.argv.includes("--check")) {
   if (next !== readme) {
@@ -37,5 +39,5 @@ if (process.argv.includes("--check")) {
     process.exit(1);
   }
 } else {
-  writeFileSync("README.md", next);
+  writeFileSync(readmePath, next);
 }
