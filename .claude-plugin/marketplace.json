@@ -167,6 +167,16 @@
       "homepage": "https://github.com/CypherPoet/custom-agent-skills/tree/main/plugins/cypherpoet-mobile-dev"
     },
     {
+      "name": "cypherpoet-obsidian-plugin-kit",
+      "source": {
+        "source": "git-subdir",
+        "url": "https://github.com/CypherPoet/custom-agent-skills.git",
+        "path": "plugins/cypherpoet-obsidian-plugin-kit"
+      },
+      "description": "Comprehensive Obsidian plugin development: scaffolding from the official sample-plugin template, the vault/editor/workspace APIs, lifecycle and memory safety, settings tabs (classic and the 1.13 declarative API), mobile and pop-out support, eslint-plugin-obsidianmd review, and community-directory submission — grounded in the official Obsidian developer docs, with a dependency-free manifest/release preflight validator.",
+      "homepage": "https://github.com/CypherPoet/custom-agent-skills/tree/main/plugins/cypherpoet-obsidian-plugin-kit"
+    },
+    {
       "name": "cypherpoet-react-three-fiber-kit",
       "source": {
         "source": "git-subdir",
