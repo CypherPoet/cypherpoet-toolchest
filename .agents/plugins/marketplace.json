@@ -1,5 +1,8 @@
 {
   "name": "cypherpoet-toolchest",
+  "interface": {
+    "displayName": "CypherPoet Toolchest"
+  },
   "plugins": [
     {
       "name": "cypherpoet-app-store-connect-kit",

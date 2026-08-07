@@ -9,6 +9,7 @@ import test from "node:test";
 import {
   buildReadme,
   comparePluginNames,
+  EXPECTED_CODEX_DISPLAY_NAME,
   EXPECTED_CODEX_POLICY,
   expectedHomepage,
   renderPluginTable,
@@ -143,6 +144,7 @@ async function createFixture(t) {
   });
   await writeJson(codexCatalogPath, {
     name: "cypherpoet-toolchest",
+    interface: { displayName: EXPECTED_CODEX_DISPLAY_NAME },
     plugins: codexPlugins,
   });
 
@@ -187,6 +189,26 @@ test("accepts the current 24 Claude / 22 Codex state and unpublished source plug
 
   assert.deepEqual(result.errors, []);
   assert.deepEqual(result.counts, { claude: 24, codex: 22 });
+});
+
+test("requires the exact Codex marketplace display name", async (t) => {
+  const cases = [
+    ["missing", (catalog) => delete catalog.interface, "interface must be an object"],
+    ["empty", (catalog) => { catalog.interface.displayName = ""; }, "interface.displayName"],
+    ["incorrect", (catalog) => { catalog.interface.displayName = "Wrong"; }, "interface.displayName"],
+  ];
+
+  for (const [label, mutate, expected] of cases) {
+    await t.test(label, async (t) => {
+      const fixture = await createFixture(t);
+      const catalog = await readJson(fixture.codexCatalogPath);
+      mutate(catalog);
+      await writeJson(fixture.codexCatalogPath, catalog);
+      assert.ok(
+        validate(fixture).errors.some((error) => error.includes(expected)),
+      );
+    });
+  }
 });
 
 test("reports duplicate and unsorted catalog names", async (t) => {
@@ -386,6 +408,7 @@ test("accepts a registry-less source repo as all Claude-only", async (t) => {
   await rm(fixture.registryPath);
   await writeJson(fixture.codexCatalogPath, {
     name: "cypherpoet-toolchest",
+    interface: { displayName: EXPECTED_CODEX_DISPLAY_NAME },
     plugins: [],
   });
   await refreshReadme(fixture);

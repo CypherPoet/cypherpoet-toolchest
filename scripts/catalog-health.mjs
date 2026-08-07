@@ -13,6 +13,7 @@ export const REGISTRY_PATH = "scripts/plugin-registry.json";
 export const SOURCE_REPOSITORY_URL =
   "https://github.com/CypherPoet/custom-agent-skills.git";
 export const SOURCE_DEFAULT_BRANCH = "main";
+export const EXPECTED_CODEX_DISPLAY_NAME = "CypherPoet Toolchest";
 export const EXPECTED_CODEX_POLICY = {
   installation: "AVAILABLE",
   authentication: "ON_INSTALL",
@@ -118,6 +119,22 @@ function validateCatalogIdentity(catalog, label, errors) {
   if (isObject(catalog) && catalog.name !== "cypherpoet-toolchest") {
     errors.push(`${label} name must be "cypherpoet-toolchest".`);
   }
+}
+
+function validateCodexCatalogInterface(catalog, errors) {
+  if (!isObject(catalog)) {
+    return;
+  }
+  if (!isObject(catalog.interface)) {
+    errors.push("Codex catalog interface must be an object.");
+    return;
+  }
+  compareField(
+    errors,
+    "Codex catalog interface.displayName",
+    catalog.interface.displayName,
+    EXPECTED_CODEX_DISPLAY_NAME,
+  );
 }
 
 function compareField(errors, label, actual, expected) {
@@ -355,6 +372,7 @@ export function validateCatalogHealth({ catalogRoot, sourceRepo }) {
 
   validateCatalogIdentity(claudeCatalog, "Claude catalog", errors);
   validateCatalogIdentity(codexCatalog, "Codex catalog", errors);
+  validateCodexCatalogInterface(codexCatalog, errors);
 
   const claudePlugins = getPlugins(claudeCatalog, "Claude catalog", errors);
   const codexPlugins = getPlugins(codexCatalog, "Codex catalog", errors);
