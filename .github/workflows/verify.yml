@@ -48,6 +48,7 @@ jobs:
             /scripts/
             /plugins/*/.claude-plugin/
             /plugins/*/.codex-plugin/
+            /codex-plugins/*/.codex-plugin/
           sparse-checkout-cone-mode: false
 
       - name: Check catalogs against source

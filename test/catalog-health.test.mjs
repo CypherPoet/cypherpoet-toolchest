@@ -253,6 +253,19 @@ test("requires a projected plugin to use its generated Codex source path", async
   );
 });
 
+test("rejects a non-boolean Codex projection flag", async (t) => {
+  const fixture = await createFixture(t);
+  const registry = await readJson(fixture.registryPath);
+  registry.dual_harness_plugins[fixture.projectedName].codexProjection = "yes";
+  await writeJson(fixture.registryPath, registry);
+
+  assert.ok(
+    validate(fixture).errors.some((error) =>
+      error.includes("codexProjection must be a boolean"),
+    ),
+  );
+});
+
 test("reports duplicate and unsorted catalog names", async (t) => {
   await t.test("duplicate", async (t) => {
     const fixture = await createFixture(t);
