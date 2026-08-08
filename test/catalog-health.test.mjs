@@ -22,19 +22,27 @@ function fallbackHomepage(name) {
   return expectedHomepage(name, undefined);
 }
 
-function sourceFor(name, includeRef = false) {
+function sourceFor(name, includeRef = false, sourceRoot = "plugins") {
   return {
     source: "git-subdir",
     url: SOURCE_REPOSITORY_URL,
-    path: `plugins/${name}`,
+    path: `${sourceRoot}/${name}`,
     ...(includeRef ? { ref: SOURCE_DEFAULT_BRANCH } : {}),
   };
 }
 
-function codexEntry(name, category = "Developer Tools") {
+function codexEntry(
+  name,
+  category = "Developer Tools",
+  codexProjection = false,
+) {
   return {
     name,
-    source: sourceFor(name, true),
+    source: sourceFor(
+      name,
+      true,
+      codexProjection ? "codex-plugins" : "plugins",
+    ),
     policy: { ...EXPECTED_CODEX_POLICY },
     category,
   };
@@ -85,6 +93,7 @@ async function createFixture(t) {
     "cypherpoet-claude-only-02",
   ];
   const unpublishedName = "cypherpoet-unpublished";
+  const projectedName = dualNames[0];
   const manifests = new Map();
 
   for (const [index, name] of [
@@ -107,8 +116,16 @@ async function createFixture(t) {
       manifest,
     );
     if (dualNames.includes(name) || name === unpublishedName) {
+      const codexSourceRoot = name === projectedName
+        ? "codex-plugins"
+        : "plugins";
       await writeJson(
-        join(sourceRepo, "plugins", name, ".codex-plugin/plugin.json"),
+        join(
+          sourceRepo,
+          codexSourceRoot,
+          name,
+          ".codex-plugin/plugin.json",
+        ),
         manifest,
       );
     }
@@ -117,7 +134,13 @@ async function createFixture(t) {
   const dualHarnessPlugins = Object.fromEntries(
     [...dualNames, unpublishedName]
       .sort()
-      .map((name) => [name, { category: "Developer Tools" }]),
+      .map((name) => [
+        name,
+        {
+          category: "Developer Tools",
+          ...(name === projectedName ? { codexProjection: true } : {}),
+        },
+      ]),
   );
   const claudeOnlyPlugins = Object.fromEntries(
     claudeOnlyNames.map((name) => [name, "Harness-specific behavior."]),
@@ -137,7 +160,9 @@ async function createFixture(t) {
       homepage: manifest.homepage ?? fallbackHomepage(name),
     };
   });
-  const codexPlugins = dualNames.map((name) => codexEntry(name));
+  const codexPlugins = dualNames.map((name) =>
+    codexEntry(name, "Developer Tools", name === projectedName),
+  );
   await writeJson(claudeCatalogPath, {
     name: "cypherpoet-toolchest",
     plugins: claudePlugins,
@@ -171,6 +196,7 @@ async function createFixture(t) {
     claudeOnlyNames,
     readmePath,
     registryPath,
+    projectedName,
     sourceRepo,
     unpublishedName,
   };
@@ -209,6 +235,22 @@ test("requires the exact Codex marketplace display name", async (t) => {
       );
     });
   }
+});
+
+test("requires a projected plugin to use its generated Codex source path", async (t) => {
+  const fixture = await createFixture(t);
+  const catalog = await readJson(fixture.codexCatalogPath);
+  const plugin = catalog.plugins.find(
+    (entry) => entry.name === fixture.projectedName,
+  );
+  plugin.source.path = `plugins/${fixture.projectedName}`;
+  await writeJson(fixture.codexCatalogPath, catalog);
+
+  assert.ok(
+    validate(fixture).errors.some((error) =>
+      error.includes(`codex-plugins/${fixture.projectedName}`),
+    ),
+  );
 });
 
 test("reports duplicate and unsorted catalog names", async (t) => {
@@ -326,7 +368,7 @@ test("reports source manifest name and version mismatches", async (t) => {
   const pluginName = fixture.dualNames[0];
   const manifestPath = join(
     fixture.sourceRepo,
-    "plugins",
+    "codex-plugins",
     pluginName,
     ".codex-plugin/plugin.json",
   );

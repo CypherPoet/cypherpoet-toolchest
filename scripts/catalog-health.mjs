@@ -145,7 +145,14 @@ function compareField(errors, label, actual, expected) {
   }
 }
 
-function validateSource(source, pluginName, requireRef, label, errors) {
+function validateSource(
+  source,
+  pluginName,
+  expectedPath,
+  requireRef,
+  label,
+  errors,
+) {
   if (!isObject(source)) {
     errors.push(`${label} source must be an object.`);
     return;
@@ -162,7 +169,7 @@ function validateSource(source, pluginName, requireRef, label, errors) {
     errors,
     `${label} source.path`,
     source.path,
-    `plugins/${pluginName}`,
+    expectedPath,
   );
   if (requireRef || source.ref !== undefined) {
     compareField(
@@ -245,6 +252,15 @@ function validateRegistry(registry, errors) {
         `Source registry dual-harness plugin "${name}" needs a category.`,
       );
     }
+    if (
+      isObject(metadata) &&
+      metadata.codexProjection !== undefined &&
+      typeof metadata.codexProjection !== "boolean"
+    ) {
+      errors.push(
+        `Source registry dual-harness plugin "${name}" codexProjection must be a boolean.`,
+      );
+    }
     if (Object.hasOwn(claudeOnlyPlugins, name)) {
       errors.push(`Source registry classifies "${name}" in both harness sets.`);
     }
@@ -262,6 +278,13 @@ function validateRegistry(registry, errors) {
   }
 
   return { claudeOnlyPlugins, dualHarnessPlugins };
+}
+
+function codexSourcePath(pluginName, classification) {
+  const sourceRoot = classification?.codexProjection === true
+    ? "codex-plugins"
+    : "plugins";
+  return `${sourceRoot}/${pluginName}`;
 }
 
 export function escapeMarkdownTableCell(value) {
@@ -412,8 +435,13 @@ export function validateCatalogHealth({ catalogRoot, sourceRepo }) {
     claudeManifests.set(pluginName, claudeManifest);
 
     if (Object.hasOwn(dualHarnessPlugins, pluginName)) {
+      const classification = dualHarnessPlugins[pluginName];
+      const codexManifestRoot = join(
+        sourceRepo,
+        codexSourcePath(pluginName, classification),
+      );
       const codexManifest = readJson(
-        join(manifestRoot, ".codex-plugin/plugin.json"),
+        join(codexManifestRoot, ".codex-plugin/plugin.json"),
         `Codex source manifest for "${pluginName}"`,
         errors,
       );
@@ -472,7 +500,14 @@ export function validateCatalogHealth({ catalogRoot, sourceRepo }) {
       continue;
     }
     const label = `Claude catalog plugin "${plugin.name}"`;
-    validateSource(plugin.source, plugin.name, false, label, errors);
+    validateSource(
+      plugin.source,
+      plugin.name,
+      `plugins/${plugin.name}`,
+      false,
+      label,
+      errors,
+    );
     const manifest = claudeManifests.get(plugin.name);
     if (isObject(manifest)) {
       compareField(
@@ -495,8 +530,15 @@ export function validateCatalogHealth({ catalogRoot, sourceRepo }) {
       continue;
     }
     const label = `Codex catalog plugin "${plugin.name}"`;
-    validateSource(plugin.source, plugin.name, true, label, errors);
     const classification = dualHarnessPlugins[plugin.name];
+    validateSource(
+      plugin.source,
+      plugin.name,
+      codexSourcePath(plugin.name, classification),
+      true,
+      label,
+      errors,
+    );
     if (isObject(classification)) {
       compareField(
         errors,
