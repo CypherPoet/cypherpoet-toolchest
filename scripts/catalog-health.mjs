@@ -252,20 +252,6 @@ function validateRegistry(registry, errors) {
         `Source registry dual-harness plugin "${name}" needs a category.`,
       );
     }
-    if (isObject(metadata) && Object.hasOwn(metadata, "codexProjection")) {
-      errors.push(
-        `Source registry dual-harness plugin "${name}" codexProjection is not supported; use separateCodexPackage.`,
-      );
-    }
-    if (
-      isObject(metadata) &&
-      Object.hasOwn(metadata, "separateCodexPackage") &&
-      typeof metadata.separateCodexPackage !== "boolean"
-    ) {
-      errors.push(
-        `Source registry dual-harness plugin "${name}" separateCodexPackage must be a boolean.`,
-      );
-    }
     if (Object.hasOwn(claudeOnlyPlugins, name)) {
       errors.push(`Source registry classifies "${name}" in both harness sets.`);
     }
@@ -285,11 +271,8 @@ function validateRegistry(registry, errors) {
   return { claudeOnlyPlugins, dualHarnessPlugins };
 }
 
-function codexSourcePath(pluginName, classification) {
-  const sourceRoot = classification?.separateCodexPackage === true
-    ? "codex-plugins"
-    : "plugins";
-  return `${sourceRoot}/${pluginName}`;
+function codexSourcePath(pluginName) {
+  return `plugins/${pluginName}`;
 }
 
 export function escapeMarkdownTableCell(value) {
@@ -440,10 +423,9 @@ export function validateCatalogHealth({ catalogRoot, sourceRepo }) {
     claudeManifests.set(pluginName, claudeManifest);
 
     if (Object.hasOwn(dualHarnessPlugins, pluginName)) {
-      const classification = dualHarnessPlugins[pluginName];
       const codexManifestRoot = join(
         sourceRepo,
-        codexSourcePath(pluginName, classification),
+        codexSourcePath(pluginName),
       );
       const codexManifest = readJson(
         join(codexManifestRoot, ".codex-plugin/plugin.json"),
@@ -539,7 +521,7 @@ export function validateCatalogHealth({ catalogRoot, sourceRepo }) {
     validateSource(
       plugin.source,
       plugin.name,
-      codexSourcePath(plugin.name, classification),
+      codexSourcePath(plugin.name),
       true,
       label,
       errors,

@@ -177,7 +177,7 @@
       "source": {
         "source": "git-subdir",
         "url": "https://github.com/CypherPoet/custom-agent-skills.git",
-        "path": "codex-plugins/cypherpoet-marketplace-kit",
+        "path": "plugins/cypherpoet-marketplace-kit",
         "ref": "main"
       },
       "policy": {

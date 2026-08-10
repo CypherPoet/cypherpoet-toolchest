@@ -22,27 +22,19 @@ function fallbackHomepage(name) {
   return expectedHomepage(name, undefined);
 }
 
-function sourceFor(name, includeRef = false, sourceRoot = "plugins") {
+function sourceFor(name, includeRef = false) {
   return {
     source: "git-subdir",
     url: SOURCE_REPOSITORY_URL,
-    path: `${sourceRoot}/${name}`,
+    path: `plugins/${name}`,
     ...(includeRef ? { ref: SOURCE_DEFAULT_BRANCH } : {}),
   };
 }
 
-function codexEntry(
-  name,
-  category = "Developer Tools",
-  separateCodexPackage = false,
-) {
+function codexEntry(name, category = "Developer Tools") {
   return {
     name,
-    source: sourceFor(
-      name,
-      true,
-      separateCodexPackage ? "codex-plugins" : "plugins",
-    ),
+    source: sourceFor(name, true),
     policy: { ...EXPECTED_CODEX_POLICY },
     category,
   };
@@ -93,7 +85,6 @@ async function createFixture(t) {
     "cypherpoet-claude-only-02",
   ];
   const unpublishedName = "cypherpoet-unpublished";
-  const separatePackageName = dualNames[0];
   const manifests = new Map();
 
   for (const [index, name] of [
@@ -116,13 +107,10 @@ async function createFixture(t) {
       manifest,
     );
     if (dualNames.includes(name) || name === unpublishedName) {
-      const codexSourceRoot = name === separatePackageName
-        ? "codex-plugins"
-        : "plugins";
       await writeJson(
         join(
           sourceRepo,
-          codexSourceRoot,
+          "plugins",
           name,
           ".codex-plugin/plugin.json",
         ),
@@ -138,7 +126,6 @@ async function createFixture(t) {
         name,
         {
           category: "Developer Tools",
-          ...(name === separatePackageName ? { separateCodexPackage: true } : {}),
         },
       ]),
   );
@@ -160,9 +147,7 @@ async function createFixture(t) {
       homepage: manifest.homepage ?? fallbackHomepage(name),
     };
   });
-  const codexPlugins = dualNames.map((name) =>
-    codexEntry(name, "Developer Tools", name === separatePackageName),
-  );
+  const codexPlugins = dualNames.map((name) => codexEntry(name));
   await writeJson(claudeCatalogPath, {
     name: "cypherpoet-toolchest",
     plugins: claudePlugins,
@@ -196,7 +181,6 @@ async function createFixture(t) {
     claudeOnlyNames,
     readmePath,
     registryPath,
-    separatePackageName,
     sourceRepo,
     unpublishedName,
   };
@@ -237,51 +221,18 @@ test("requires the exact Codex marketplace display name", async (t) => {
   }
 });
 
-test("requires a separate Codex package to use its generated source path", async (t) => {
+test("requires every Codex entry to use the shared plugin directory", async (t) => {
   const fixture = await createFixture(t);
   const catalog = await readJson(fixture.codexCatalogPath);
-  const plugin = catalog.plugins.find(
-    (entry) => entry.name === fixture.separatePackageName,
-  );
-  plugin.source.path = `plugins/${fixture.separatePackageName}`;
+  const plugin = catalog.plugins[0];
+  plugin.source.path = `other/${plugin.name}`;
   await writeJson(fixture.codexCatalogPath, catalog);
 
   assert.ok(
-    validate(fixture).errors.some((error) =>
-      error.includes(`codex-plugins/${fixture.separatePackageName}`),
+    validate(fixture).errors.includes(
+      `Codex catalog plugin "${plugin.name}" source.path must be "plugins/${plugin.name}"; found "other/${plugin.name}".`,
     ),
   );
-});
-
-test("rejects malformed and retired separate-package settings", async (t) => {
-  for (const value of ["yes", null]) {
-    await t.test(JSON.stringify(value), async (caseContext) => {
-      const fixture = await createFixture(caseContext);
-      const registry = await readJson(fixture.registryPath);
-      registry.dual_harness_plugins[fixture.separatePackageName].separateCodexPackage = value;
-      await writeJson(fixture.registryPath, registry);
-
-      assert.ok(
-        validate(fixture).errors.some((error) =>
-          error.includes("separateCodexPackage must be a boolean"),
-        ),
-      );
-    });
-  }
-
-  await t.test("retired name", async (caseContext) => {
-    const fixture = await createFixture(caseContext);
-    const registry = await readJson(fixture.registryPath);
-    const metadata = registry.dual_harness_plugins[fixture.separatePackageName];
-    delete metadata.separateCodexPackage;
-    metadata.codexProjection = true;
-    await writeJson(fixture.registryPath, registry);
-    assert.ok(
-      validate(fixture).errors.some((error) =>
-        error.includes("codexProjection is not supported"),
-      ),
-    );
-  });
 });
 
 test("reports duplicate and unsorted catalog names", async (t) => {
@@ -399,7 +350,7 @@ test("reports source manifest name and version mismatches", async (t) => {
   const pluginName = fixture.dualNames[0];
   const manifestPath = join(
     fixture.sourceRepo,
-    "codex-plugins",
+    "plugins",
     pluginName,
     ".codex-plugin/plugin.json",
   );
