@@ -77,7 +77,7 @@ Either way, **no catalog change here is needed for content edits**. The catalogs
 
 > This section is for the catalog maintainer. Plugin consumers don't need to read further.
 
-This catalog is maintained largely via updates from downstream repos. The [`custom-agent-skills`](https://github.com/CypherPoet/custom-agent-skills) repo, for example, runs its **`marketplace-publish`** skill to open a PR here that adds or updates a plugin's entries in whichever catalogs list it (both for dual-harness plugins; the Claude catalog alone for Claude-Code-specific ones), and its **`marketplace-sync-check`** skill to audit which plugins are/aren't listed.
+This catalog is maintained largely via updates from downstream repos. The [`custom-agent-skills`](https://github.com/CypherPoet/custom-agent-skills) repo, for example, runs its **`marketplace-publish`** skill to open a PR here that updates each catalog for which a plugin has a corresponding source manifest, and its **`marketplace-sync-check`** skill to audit which plugins are or are not listed.
 
 The **Plugins** table above is generated from both marketplace catalogs — don't edit it by hand. Run `node scripts/sync-readme-table.mjs` to regenerate it (add `--check` to verify it's in sync without writing). A scheduled **catalog-sync [routine](https://code.claude.com/docs/en/routines)** runs this script as part of detecting newly published plugins and opening a sync PR, so the catalog and table stay current without manual upkeep.
 
