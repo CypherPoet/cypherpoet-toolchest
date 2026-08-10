@@ -214,6 +214,7 @@ function escapeLinkDestination(url) {
 }
 
 export function renderPluginTable(claudePlugins, codexPlugins) {
+  const claudePluginsByName = new Map();
   for (const [index, plugin] of claudePlugins.entries()) {
     if (!isObject(plugin) || typeof plugin.name !== "string" || !plugin.name) {
       throw new Error(`Claude catalog entry ${index + 1} must have a plugin name.`);
@@ -223,19 +224,56 @@ export function renderPluginTable(claudePlugins, codexPlugins) {
         throw new Error(`Claude catalog plugin "${plugin.name}" must have a ${field}.`);
       }
     }
+    claudePluginsByName.set(plugin.name, plugin);
   }
-  const codexNames = new Set(
-    codexPlugins
-      .filter((plugin) => isObject(plugin) && typeof plugin.name === "string")
-      .map((plugin) => plugin.name),
-  );
-  const rows = [...claudePlugins]
-    .sort((left, right) => comparePluginNames(left.name, right.name))
-    .map((plugin) => {
-      const name = escapeMarkdownTableCell(plugin.name);
-      const homepage = escapeLinkDestination(plugin.homepage);
-      const description = escapeMarkdownTableCell(plugin.description.replace(/\.$/, ""));
-      return `| [\`${name}\`](${homepage}) | ✅ | ${codexNames.has(plugin.name) ? "✅" : "—"} | ${description} |`;
+
+  const codexPluginsByName = new Map();
+  for (const [index, plugin] of codexPlugins.entries()) {
+    if (!isObject(plugin) || typeof plugin.name !== "string" || !plugin.name) {
+      throw new Error(`Codex catalog entry ${index + 1} must have a plugin name.`);
+    }
+    codexPluginsByName.set(plugin.name, plugin);
+  }
+
+  const names = new Set([
+    ...claudePluginsByName.keys(),
+    ...codexPluginsByName.keys(),
+  ]);
+  const rows = [...names]
+    .sort(comparePluginNames)
+    .map((pluginName) => {
+      const claudePlugin = claudePluginsByName.get(pluginName);
+      const codexPlugin = codexPluginsByName.get(pluginName);
+      let homepage = claudePlugin?.homepage;
+      if (homepage === undefined) {
+        const source = codexPlugin?.source;
+        if (
+          !isObject(source) ||
+          typeof source.url !== "string" ||
+          !source.url.trim() ||
+          typeof source.path !== "string" ||
+          !source.path.trim()
+        ) {
+          throw new Error(
+            `Codex catalog plugin "${pluginName}" must have a usable source URL and path.`,
+          );
+        }
+        const repositoryPage = source.url.replace(/\.git$/u, "");
+        const ref =
+          typeof source.ref === "string" && source.ref.trim()
+            ? source.ref
+            : SOURCE_DEFAULT_BRANCH;
+        homepage = `${repositoryPage}/tree/${ref}/${source.path}`;
+      }
+
+      const name = escapeMarkdownTableCell(pluginName);
+      const link = escapeLinkDestination(homepage);
+      const description = claudePlugin
+        ? escapeMarkdownTableCell(claudePlugin.description.replace(/\.$/, ""))
+        : "—";
+      const claudeAvailability = claudePlugin === undefined ? "—" : "✅";
+      const codexAvailability = codexPlugin === undefined ? "—" : "✅";
+      return `| [\`${name}\`](${link}) | ${claudeAvailability} | ${codexAvailability} | ${description} |`;
     });
   return [
     "| Plugin | Claude Code | Codex | Description |",

@@ -208,6 +208,19 @@ test("a Codex catalog entry does not require Claude publication", async (t) => {
   assert.deepEqual(validate(fixture).errors, []);
 });
 
+test("the README table includes Codex-only catalog entries", async (t) => {
+  const fixture = await createFixture(t);
+  const readme = await readFile(fixture.readmePath, "utf8");
+  const row = readme
+    .split("\n")
+    .find((line) => line.includes(`\`${fixture.codexOnlyName}\``));
+  assert.ok(row);
+  assert.match(
+    row,
+    /\| — \| ✅ \| — \|$/u,
+  );
+});
+
 test("Codex category comes from the authored Codex manifest", async (t) => {
   const fixture = await createFixture(t);
   const path = join(
