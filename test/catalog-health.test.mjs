@@ -328,6 +328,22 @@ test("reports source manifest name and version failures", async (t) => {
   assert.match(errors, /Codex source manifest.* version/u);
 });
 
+test("requires matching versions for plugins published on both platforms", async (t) => {
+  const fixture = await createFixture(t);
+  const path = join(
+    fixture.sourceRepo,
+    "plugins",
+    fixture.bothName,
+    ".codex-plugin/plugin.json",
+  );
+  const manifest = await readJson(path);
+  manifest.version = "1.0.1";
+  await writeJson(path, manifest);
+  assert.ok(
+    validate(fixture).errors.some((error) => error.includes("must use the same version")),
+  );
+});
+
 test("reports a stale README table", async (t) => {
   const fixture = await createFixture(t);
   const readme = await readFile(fixture.readmePath, "utf8");

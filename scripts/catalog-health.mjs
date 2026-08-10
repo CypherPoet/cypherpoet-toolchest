@@ -321,6 +321,8 @@ export function validateCatalogHealth({ catalogRoot, sourceRepo }) {
   const codexPlugins = getPlugins(codexCatalog, "Codex catalog", errors);
   validateCatalogNames(claudePlugins, "Claude catalog", errors);
   validateCatalogNames(codexPlugins, "Codex catalog", errors);
+  const claudeManifests = new Map();
+  const codexManifests = new Map();
 
   for (const plugin of claudePlugins) {
     if (!isObject(plugin) || typeof plugin.name !== "string") {
@@ -335,6 +337,7 @@ export function validateCatalogHealth({ catalogRoot, sourceRepo }) {
       errors,
     );
     validateManifest(manifest, plugin.name, manifestLabel, errors);
+    claudeManifests.set(plugin.name, manifest);
     if (isObject(manifest)) {
       compareField(errors, `${label} description`, plugin.description, manifest.description);
       compareField(
@@ -375,9 +378,25 @@ export function validateCatalogHealth({ catalogRoot, sourceRepo }) {
       errors,
     );
     validateManifest(manifest, plugin.name, manifestLabel, errors);
+    codexManifests.set(plugin.name, manifest);
     const category = codexCategory(manifest, manifestLabel, errors);
     if (category !== undefined) {
       compareField(errors, `${label} category`, plugin.category, category);
+    }
+  }
+
+  for (const [pluginName, claudeManifest] of claudeManifests) {
+    const codexManifest = codexManifests.get(pluginName);
+    if (
+      isObject(claudeManifest) &&
+      isObject(codexManifest) &&
+      claudeManifest.version !== codexManifest.version
+    ) {
+      errors.push(
+        `Source manifests for "${pluginName}" must use the same version; ` +
+          `found Claude ${JSON.stringify(claudeManifest.version)} and ` +
+          `Codex ${JSON.stringify(codexManifest.version)}.`,
+      );
     }
   }
 
