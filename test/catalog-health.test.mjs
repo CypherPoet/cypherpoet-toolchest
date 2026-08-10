@@ -34,14 +34,14 @@ function sourceFor(name, includeRef = false, sourceRoot = "plugins") {
 function codexEntry(
   name,
   category = "Developer Tools",
-  codexProjection = false,
+  separateCodexPackage = false,
 ) {
   return {
     name,
     source: sourceFor(
       name,
       true,
-      codexProjection ? "codex-plugins" : "plugins",
+      separateCodexPackage ? "codex-plugins" : "plugins",
     ),
     policy: { ...EXPECTED_CODEX_POLICY },
     category,
@@ -93,7 +93,7 @@ async function createFixture(t) {
     "cypherpoet-claude-only-02",
   ];
   const unpublishedName = "cypherpoet-unpublished";
-  const projectedName = dualNames[0];
+  const separatePackageName = dualNames[0];
   const manifests = new Map();
 
   for (const [index, name] of [
@@ -116,7 +116,7 @@ async function createFixture(t) {
       manifest,
     );
     if (dualNames.includes(name) || name === unpublishedName) {
-      const codexSourceRoot = name === projectedName
+      const codexSourceRoot = name === separatePackageName
         ? "codex-plugins"
         : "plugins";
       await writeJson(
@@ -138,7 +138,7 @@ async function createFixture(t) {
         name,
         {
           category: "Developer Tools",
-          ...(name === projectedName ? { codexProjection: true } : {}),
+          ...(name === separatePackageName ? { separateCodexPackage: true } : {}),
         },
       ]),
   );
@@ -161,7 +161,7 @@ async function createFixture(t) {
     };
   });
   const codexPlugins = dualNames.map((name) =>
-    codexEntry(name, "Developer Tools", name === projectedName),
+    codexEntry(name, "Developer Tools", name === separatePackageName),
   );
   await writeJson(claudeCatalogPath, {
     name: "cypherpoet-toolchest",
@@ -196,7 +196,7 @@ async function createFixture(t) {
     claudeOnlyNames,
     readmePath,
     registryPath,
-    projectedName,
+    separatePackageName,
     sourceRepo,
     unpublishedName,
   };
@@ -237,33 +237,51 @@ test("requires the exact Codex marketplace display name", async (t) => {
   }
 });
 
-test("requires a projected plugin to use its generated Codex source path", async (t) => {
+test("requires a separate Codex package to use its generated source path", async (t) => {
   const fixture = await createFixture(t);
   const catalog = await readJson(fixture.codexCatalogPath);
   const plugin = catalog.plugins.find(
-    (entry) => entry.name === fixture.projectedName,
+    (entry) => entry.name === fixture.separatePackageName,
   );
-  plugin.source.path = `plugins/${fixture.projectedName}`;
+  plugin.source.path = `plugins/${fixture.separatePackageName}`;
   await writeJson(fixture.codexCatalogPath, catalog);
 
   assert.ok(
     validate(fixture).errors.some((error) =>
-      error.includes(`codex-plugins/${fixture.projectedName}`),
+      error.includes(`codex-plugins/${fixture.separatePackageName}`),
     ),
   );
 });
 
-test("rejects a non-boolean Codex projection flag", async (t) => {
-  const fixture = await createFixture(t);
-  const registry = await readJson(fixture.registryPath);
-  registry.dual_harness_plugins[fixture.projectedName].codexProjection = "yes";
-  await writeJson(fixture.registryPath, registry);
+test("rejects malformed and retired separate-package settings", async (t) => {
+  for (const value of ["yes", null]) {
+    await t.test(JSON.stringify(value), async (caseContext) => {
+      const fixture = await createFixture(caseContext);
+      const registry = await readJson(fixture.registryPath);
+      registry.dual_harness_plugins[fixture.separatePackageName].separateCodexPackage = value;
+      await writeJson(fixture.registryPath, registry);
 
-  assert.ok(
-    validate(fixture).errors.some((error) =>
-      error.includes("codexProjection must be a boolean"),
-    ),
-  );
+      assert.ok(
+        validate(fixture).errors.some((error) =>
+          error.includes("separateCodexPackage must be a boolean"),
+        ),
+      );
+    });
+  }
+
+  await t.test("retired name", async (caseContext) => {
+    const fixture = await createFixture(caseContext);
+    const registry = await readJson(fixture.registryPath);
+    const metadata = registry.dual_harness_plugins[fixture.separatePackageName];
+    delete metadata.separateCodexPackage;
+    metadata.codexProjection = true;
+    await writeJson(fixture.registryPath, registry);
+    assert.ok(
+      validate(fixture).errors.some((error) =>
+        error.includes("codexProjection is not supported"),
+      ),
+    );
+  });
 });
 
 test("reports duplicate and unsorted catalog names", async (t) => {

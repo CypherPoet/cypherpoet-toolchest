@@ -89,7 +89,7 @@ The catalog health suite requires Node 24 and runs independently of GitHub Actio
 npm ci
 npm test
 npm run check -- --source-repo ../custom-agent-skills
-npx claude plugin validate .
+npm run validate:claude
 ```
 
 The same commands can run under any CI provider. The Claude CLI command (installed as a dev dependency) retains the marketplace's harness-native schema validation; the Node suite covers the cross-repository catalog contract and README rendering, including the README staleness check. Without a source checkout handy, `node scripts/sync-readme-table.mjs --check` runs the README staleness check on its own.

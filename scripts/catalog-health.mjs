@@ -252,13 +252,18 @@ function validateRegistry(registry, errors) {
         `Source registry dual-harness plugin "${name}" needs a category.`,
       );
     }
+    if (isObject(metadata) && Object.hasOwn(metadata, "codexProjection")) {
+      errors.push(
+        `Source registry dual-harness plugin "${name}" codexProjection is not supported; use separateCodexPackage.`,
+      );
+    }
     if (
       isObject(metadata) &&
-      metadata.codexProjection !== undefined &&
-      typeof metadata.codexProjection !== "boolean"
+      Object.hasOwn(metadata, "separateCodexPackage") &&
+      typeof metadata.separateCodexPackage !== "boolean"
     ) {
       errors.push(
-        `Source registry dual-harness plugin "${name}" codexProjection must be a boolean.`,
+        `Source registry dual-harness plugin "${name}" separateCodexPackage must be a boolean.`,
       );
     }
     if (Object.hasOwn(claudeOnlyPlugins, name)) {
@@ -281,7 +286,7 @@ function validateRegistry(registry, errors) {
 }
 
 function codexSourcePath(pluginName, classification) {
-  const sourceRoot = classification?.codexProjection === true
+  const sourceRoot = classification?.separateCodexPackage === true
     ? "codex-plugins"
     : "plugins";
   return `${sourceRoot}/${pluginName}`;
