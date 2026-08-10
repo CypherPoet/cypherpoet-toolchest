@@ -45,7 +45,6 @@ jobs:
           path: custom-agent-skills
           filter: blob:none
           sparse-checkout: |
-            /scripts/
             /plugins/*/.claude-plugin/
             /plugins/*/.codex-plugin/
           sparse-checkout-cone-mode: false
@@ -54,4 +53,4 @@ jobs:
         run: npm run check -- --source-repo custom-agent-skills
 
       - name: Validate Claude marketplace schema
-        run: npx claude plugin validate .
+        run: npm run validate:claude

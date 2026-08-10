@@ -1,6 +1,6 @@
 # 💎 CypherPoet Toolchest
 
-A plugin marketplace of custom themed plugins — agent tooling, dev workflow utilities, and more — for both [Claude Code](https://code.claude.com/docs/en/plugin-marketplaces) and [Codex](https://learn.chatgpt.com/docs/build-plugins). This repo holds only the two catalog files — `.claude-plugin/marketplace.json` (Claude Code) and `.agents/plugins/marketplace.json` (Codex); each plugin's source lives in separate repos and is sparse-cloned on demand.
+A plugin marketplace of custom themed plugins — agent tooling, dev workflow utilities, and more — for both [Claude Code](https://code.claude.com/docs/en/plugin-marketplaces) and [Codex](https://developers.openai.com/plugins/build/plugins). This repo holds only the two catalog files — `.claude-plugin/marketplace.json` (Claude Code) and `.agents/plugins/marketplace.json` (Codex); each plugin's source lives in separate repos and is sparse-cloned on demand.
 
 [![X](https://img.shields.io/badge/%40cypher__poet-000000?style=for-the-badge&logo=x&logoColor=white)](https://x.com/cypher_poet) [![PayPal](https://img.shields.io/badge/PayPal-003087?style=for-the-badge&logo=paypal&logoColor=white)](https://www.paypal.com/ncp/payment/L6M553P28YPDY) [![Cash App](https://img.shields.io/badge/Cash_App-00C244?style=for-the-badge&logo=cashapp&logoColor=white)](https://cash.app/$CypherPoet) [![Buy Me a Coffee](https://img.shields.io/badge/Buy_Me_a_Coffee-FFDD00?style=for-the-badge&logo=buymeacoffee&logoColor=000000)](https://buymeacoffee.com/cypherpoet)
 
@@ -69,7 +69,7 @@ Claude-Code-specific plugins appear in the Claude catalog only.
 
 ## 🔄 Update Model
 
-Plugins pin a `version` in their `plugin.json`, and that version is each harness's update cache key: content edits in a source repo reach **existing** installs when the plugin's `version` is bumped there (a fresh install always pulls the latest from the source repo's default branch).
+Plugins pin the same `version` in every platform manifest they support. That version is each platform's update cache key: content edits in a source repo reach **existing** installs when the plugin's `version` is bumped there (a fresh install always pulls the latest from the source repo's default branch).
 
 Either way, **no catalog change here is needed for content edits**. The catalogs only change when a plugin is **added, removed, or has an update to one of its [entry fields](https://code.claude.com/docs/en/plugin-marketplaces#marketplace-schema)** — `name`/`description`/`homepage` on the Claude side; source, `category`, or `policy` on the Codex side.
 
@@ -77,7 +77,7 @@ Either way, **no catalog change here is needed for content edits**. The catalogs
 
 > This section is for the catalog maintainer. Plugin consumers don't need to read further.
 
-This catalog is maintained largely via updates from downstream repos. The [`custom-agent-skills`](https://github.com/CypherPoet/custom-agent-skills) repo, for example, runs its **`marketplace-publish`** skill to open a PR here that adds or updates a plugin's entries in whichever catalogs list it (both for dual-harness plugins; the Claude catalog alone for Claude-Code-specific ones), and its **`marketplace-sync-check`** skill to audit which plugins are/aren't listed.
+This catalog is maintained largely via updates from downstream repos. The [`custom-agent-skills`](https://github.com/CypherPoet/custom-agent-skills) repo, for example, runs its **`marketplace-publish`** skill to open a PR here that updates each catalog for which a plugin has a corresponding source manifest, and its **`marketplace-sync-check`** skill to audit which plugins are or are not listed.
 
 The **Plugins** table above is generated from both marketplace catalogs — don't edit it by hand. Run `node scripts/sync-readme-table.mjs` to regenerate it (add `--check` to verify it's in sync without writing). A scheduled **catalog-sync [routine](https://code.claude.com/docs/en/routines)** runs this script as part of detecting newly published plugins and opening a sync PR, so the catalog and table stay current without manual upkeep.
 
@@ -89,7 +89,7 @@ The catalog health suite requires Node 24 and runs independently of GitHub Actio
 npm ci
 npm test
 npm run check -- --source-repo ../custom-agent-skills
-npx claude plugin validate .
+npm run validate:claude
 ```
 
 The same commands can run under any CI provider. The Claude CLI command (installed as a dev dependency) retains the marketplace's harness-native schema validation; the Node suite covers the cross-repository catalog contract and README rendering, including the README staleness check. Without a source checkout handy, `node scripts/sync-readme-table.mjs --check` runs the README staleness check on its own.
@@ -114,7 +114,7 @@ The same commands can run under any CI provider. The Claude CLI command (install
 └── README.md
 ```
 
-To remove a plugin: delete its entry from `plugins[]` in **both** catalog files — [`.claude-plugin/marketplace.json`](.claude-plugin/marketplace.json) and [`.agents/plugins/marketplace.json`](.agents/plugins/marketplace.json) — and open a PR (a plugin reclassified as Claude-only comes out of the Codex catalog alone). Keep both arrays sorted by `name`.
+To retire a plugin completely, delete its entry from `plugins[]` in **both** catalog files — [`.claude-plugin/marketplace.json`](.claude-plugin/marketplace.json) and [`.agents/plugins/marketplace.json`](.agents/plugins/marketplace.json) — and open a PR. If the source removes only one platform manifest, delete only that platform's catalog entry. Keep both arrays sorted by `name`.
 
 ## 🪪 License
 

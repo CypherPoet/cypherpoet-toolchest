@@ -1,35 +1,37 @@
-import { existsSync, readFileSync } from "node:fs";
+import { readFileSync } from "node:fs";
 import { join } from "node:path";
 
 export const CLAUDE_CATALOG_PATH = ".claude-plugin/marketplace.json";
 export const CODEX_CATALOG_PATH = ".agents/plugins/marketplace.json";
 export const README_PATH = "README.md";
-export const REGISTRY_PATH = "scripts/plugin-registry.json";
-
-// These constants are this repo's half of the contract that the source repo's
-// marketplace-publish skill writes (it resolves the default branch dynamically;
-// this checker pins it). If the source repository moves or renames its default
-// branch, update these together with that skill.
 export const SOURCE_REPOSITORY_URL =
   "https://github.com/CypherPoet/custom-agent-skills.git";
 export const SOURCE_DEFAULT_BRANCH = "main";
+export const EXPECTED_CODEX_DISPLAY_NAME = "CypherPoet Toolchest";
 export const EXPECTED_CODEX_POLICY = {
   installation: "AVAILABLE",
   authentication: "ON_INSTALL",
 };
+
 const TABLE_BEGIN = "<!-- BEGIN:PLUGINS-TABLE";
 const TABLE_END = "<!-- END:PLUGINS-TABLE -->";
 const PLUGIN_NAME_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
-const VERSION_PATTERN =
-  /^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?(?:\+[0-9A-Za-z.-]+)?$/;
+const VERSION_PATTERN = /^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?(?:\+[0-9A-Za-z.-]+)?$/;
 
 function isObject(value) {
   return value !== null && typeof value === "object" && !Array.isArray(value);
 }
 
 function readJson(path, label, errors) {
+  let text;
   try {
-    return JSON.parse(readFileSync(path, "utf8"));
+    text = readFileSync(path, "utf8");
+  } catch (error) {
+    errors.push(`${label} could not be read: ${error.message}`);
+    return undefined;
+  }
+  try {
+    return JSON.parse(text);
   } catch (error) {
     errors.push(`${label} could not be parsed: ${error.message}`);
     return undefined;
@@ -61,11 +63,17 @@ function getPlugins(catalog, label, errors) {
 }
 
 export function readCatalogPlugins(path, label) {
-  let catalog;
+  let text;
   try {
-    catalog = JSON.parse(readFileSync(path, "utf8"));
+    text = readFileSync(path, "utf8");
   } catch (error) {
     throw new Error(`${label} could not be read: ${error.message}`);
+  }
+  let catalog;
+  try {
+    catalog = JSON.parse(text);
+  } catch (error) {
+    throw new Error(`${label} could not be parsed: ${error.message}`);
   }
   if (!isObject(catalog) || !Array.isArray(catalog.plugins)) {
     throw new Error(`${label} must be a JSON object with a plugins array.`);
@@ -74,50 +82,7 @@ export function readCatalogPlugins(path, label) {
 }
 
 export function comparePluginNames(left, right) {
-  if (left < right) {
-    return -1;
-  }
-  if (left > right) {
-    return 1;
-  }
-  return 0;
-}
-
-function validateCatalogNames(plugins, label, errors) {
-  const names = [];
-  const seen = new Set();
-
-  for (const [index, plugin] of plugins.entries()) {
-    if (!isObject(plugin)) {
-      errors.push(`${label} entry ${index + 1} must be an object.`);
-      continue;
-    }
-
-    const { name } = plugin;
-    if (typeof name !== "string" || !PLUGIN_NAME_PATTERN.test(name)) {
-      errors.push(`${label} entry ${index + 1} has an invalid plugin name.`);
-      continue;
-    }
-
-    names.push(name);
-    if (seen.has(name)) {
-      errors.push(`${label} contains duplicate plugin "${name}".`);
-    }
-    seen.add(name);
-  }
-
-  const sortedNames = [...names].sort(comparePluginNames);
-  if (names.some((name, index) => name !== sortedNames[index])) {
-    errors.push(`${label} plugins must be sorted by name.`);
-  }
-
-  return names;
-}
-
-function validateCatalogIdentity(catalog, label, errors) {
-  if (isObject(catalog) && catalog.name !== "cypherpoet-toolchest") {
-    errors.push(`${label} name must be "cypherpoet-toolchest".`);
-  }
+  return left < right ? -1 : left > right ? 1 : 0;
 }
 
 function compareField(errors, label, actual, expected) {
@@ -128,32 +93,63 @@ function compareField(errors, label, actual, expected) {
   }
 }
 
+function validateCatalogNames(plugins, label, errors) {
+  const names = [];
+  const seen = new Set();
+  for (const [index, plugin] of plugins.entries()) {
+    if (!isObject(plugin)) {
+      errors.push(`${label} entry ${index + 1} must be an object.`);
+      continue;
+    }
+    if (typeof plugin.name !== "string" || !PLUGIN_NAME_PATTERN.test(plugin.name)) {
+      errors.push(`${label} entry ${index + 1} has an invalid plugin name.`);
+      continue;
+    }
+    names.push(plugin.name);
+    if (seen.has(plugin.name)) {
+      errors.push(`${label} contains duplicate plugin "${plugin.name}".`);
+    }
+    seen.add(plugin.name);
+  }
+  const sorted = [...names].sort(comparePluginNames);
+  if (names.some((name, index) => name !== sorted[index])) {
+    errors.push(`${label} plugins must be sorted by name.`);
+  }
+  return names;
+}
+
+function validateCatalogIdentity(catalog, label, errors) {
+  if (isObject(catalog) && catalog.name !== "cypherpoet-toolchest") {
+    errors.push(`${label} name must be "cypherpoet-toolchest".`);
+  }
+}
+
+function validateCodexCatalogInterface(catalog, errors) {
+  if (!isObject(catalog)) {
+    return;
+  }
+  if (!isObject(catalog.interface)) {
+    errors.push("Codex catalog interface must be an object.");
+    return;
+  }
+  compareField(
+    errors,
+    "Codex catalog interface.displayName",
+    catalog.interface.displayName,
+    EXPECTED_CODEX_DISPLAY_NAME,
+  );
+}
+
 function validateSource(source, pluginName, requireRef, label, errors) {
   if (!isObject(source)) {
     errors.push(`${label} source must be an object.`);
     return;
   }
-
   compareField(errors, `${label} source.source`, source.source, "git-subdir");
-  compareField(
-    errors,
-    `${label} source.url`,
-    source.url,
-    SOURCE_REPOSITORY_URL,
-  );
-  compareField(
-    errors,
-    `${label} source.path`,
-    source.path,
-    `plugins/${pluginName}`,
-  );
+  compareField(errors, `${label} source.url`, source.url, SOURCE_REPOSITORY_URL);
+  compareField(errors, `${label} source.path`, source.path, `plugins/${pluginName}`);
   if (requireRef || source.ref !== undefined) {
-    compareField(
-      errors,
-      `${label} source.ref`,
-      source.ref,
-      SOURCE_DEFAULT_BRANCH,
-    );
+    compareField(errors, `${label} source.ref`, source.ref, SOURCE_DEFAULT_BRANCH);
   }
 }
 
@@ -165,12 +161,8 @@ function validateManifest(manifest, pluginName, label, errors) {
     errors.push(`${label} must be a JSON object.`);
     return;
   }
-
   compareField(errors, `${label} name`, manifest.name, pluginName);
-  if (
-    typeof manifest.version !== "string" ||
-    !VERSION_PATTERN.test(manifest.version)
-  ) {
+  if (typeof manifest.version !== "string" || !VERSION_PATTERN.test(manifest.version)) {
     errors.push(`${label} version must be a semantic version.`);
   }
   if (typeof manifest.description !== "string" || !manifest.description.trim()) {
@@ -184,67 +176,27 @@ function validateManifest(manifest, pluginName, label, errors) {
   }
 }
 
+function codexCategory(manifest, label, errors) {
+  if (!isObject(manifest)) {
+    return undefined;
+  }
+  if (!isObject(manifest.interface)) {
+    errors.push(`${label} interface must be an object.`);
+    return undefined;
+  }
+  if (typeof manifest.interface.category !== "string" || !manifest.interface.category.trim()) {
+    errors.push(`${label} interface.category must be a non-empty string.`);
+    return undefined;
+  }
+  return manifest.interface.category;
+}
+
 export function expectedHomepage(pluginName, manifest) {
   if (typeof manifest?.homepage === "string" && manifest.homepage.trim()) {
     return manifest.homepage;
   }
   const repositoryPage = SOURCE_REPOSITORY_URL.replace(/\.git$/, "");
   return `${repositoryPage}/tree/${SOURCE_DEFAULT_BRANCH}/plugins/${pluginName}`;
-}
-
-function validateRegistry(registry, errors) {
-  if (registry === undefined) {
-    return { claudeOnlyPlugins: {}, dualHarnessPlugins: {} };
-  }
-  if (!isObject(registry)) {
-    errors.push("Source registry must be a JSON object.");
-    return { claudeOnlyPlugins: {}, dualHarnessPlugins: {} };
-  }
-
-  const dualHarnessPlugins = isObject(registry.dual_harness_plugins)
-    ? registry.dual_harness_plugins
-    : {};
-  const claudeOnlyPlugins = isObject(registry.claude_only_plugins)
-    ? registry.claude_only_plugins
-    : {};
-
-  if (!isObject(registry.dual_harness_plugins)) {
-    errors.push("Source registry dual_harness_plugins must be an object.");
-  }
-  if (!isObject(registry.claude_only_plugins)) {
-    errors.push("Source registry claude_only_plugins must be an object.");
-  }
-
-  for (const [name, metadata] of Object.entries(dualHarnessPlugins)) {
-    if (!PLUGIN_NAME_PATTERN.test(name)) {
-      errors.push(`Source registry has invalid dual-harness name "${name}".`);
-    }
-    if (
-      !isObject(metadata) ||
-      typeof metadata.category !== "string" ||
-      !metadata.category.trim()
-    ) {
-      errors.push(
-        `Source registry dual-harness plugin "${name}" needs a category.`,
-      );
-    }
-    if (Object.hasOwn(claudeOnlyPlugins, name)) {
-      errors.push(`Source registry classifies "${name}" in both harness sets.`);
-    }
-  }
-
-  for (const [name, reason] of Object.entries(claudeOnlyPlugins)) {
-    if (!PLUGIN_NAME_PATTERN.test(name)) {
-      errors.push(`Source registry has invalid Claude-only name "${name}".`);
-    }
-    if (typeof reason !== "string" || !reason.trim()) {
-      errors.push(
-        `Source registry Claude-only plugin "${name}" needs a reason.`,
-      );
-    }
-  }
-
-  return { claudeOnlyPlugins, dualHarnessPlugins };
 }
 
 export function escapeMarkdownTableCell(value) {
@@ -254,8 +206,6 @@ export function escapeMarkdownTableCell(value) {
     .replace(/\s*\r?\n\s*/g, " ");
 }
 
-// Spaces and parentheses terminate a Markdown link destination, so they must
-// be percent-encoded on top of the table-cell escapes.
 function escapeLinkDestination(url) {
   return escapeMarkdownTableCell(url)
     .replace(/ /g, "%20")
@@ -264,38 +214,67 @@ function escapeLinkDestination(url) {
 }
 
 export function renderPluginTable(claudePlugins, codexPlugins) {
+  const claudePluginsByName = new Map();
   for (const [index, plugin] of claudePlugins.entries()) {
     if (!isObject(plugin) || typeof plugin.name !== "string" || !plugin.name) {
-      throw new Error(
-        `Claude catalog entry ${index + 1} must have a plugin name.`,
-      );
+      throw new Error(`Claude catalog entry ${index + 1} must have a plugin name.`);
     }
     for (const field of ["description", "homepage"]) {
       if (typeof plugin[field] !== "string" || !plugin[field].trim()) {
-        throw new Error(
-          `Claude catalog plugin "${plugin.name}" must have a ${field}.`,
-        );
+        throw new Error(`Claude catalog plugin "${plugin.name}" must have a ${field}.`);
       }
     }
+    claudePluginsByName.set(plugin.name, plugin);
   }
 
-  const codexNames = new Set(
-    codexPlugins
-      .filter((plugin) => isObject(plugin) && typeof plugin.name === "string")
-      .map((plugin) => plugin.name),
-  );
-  const rows = [...claudePlugins]
-    .sort((left, right) => comparePluginNames(left.name, right.name))
-    .map((plugin) => {
-      const name = escapeMarkdownTableCell(plugin.name);
-      const homepage = escapeLinkDestination(plugin.homepage);
-      const description = escapeMarkdownTableCell(
-        plugin.description.replace(/\.$/, ""),
-      );
-      const codexAvailability = codexNames.has(plugin.name) ? "✅" : "—";
-      return `| [\`${name}\`](${homepage}) | ✅ | ${codexAvailability} | ${description} |`;
-    });
+  const codexPluginsByName = new Map();
+  for (const [index, plugin] of codexPlugins.entries()) {
+    if (!isObject(plugin) || typeof plugin.name !== "string" || !plugin.name) {
+      throw new Error(`Codex catalog entry ${index + 1} must have a plugin name.`);
+    }
+    codexPluginsByName.set(plugin.name, plugin);
+  }
 
+  const names = new Set([
+    ...claudePluginsByName.keys(),
+    ...codexPluginsByName.keys(),
+  ]);
+  const rows = [...names]
+    .sort(comparePluginNames)
+    .map((pluginName) => {
+      const claudePlugin = claudePluginsByName.get(pluginName);
+      const codexPlugin = codexPluginsByName.get(pluginName);
+      let homepage = claudePlugin?.homepage;
+      if (homepage === undefined) {
+        const source = codexPlugin?.source;
+        if (
+          !isObject(source) ||
+          typeof source.url !== "string" ||
+          !source.url.trim() ||
+          typeof source.path !== "string" ||
+          !source.path.trim()
+        ) {
+          throw new Error(
+            `Codex catalog plugin "${pluginName}" must have a usable source URL and path.`,
+          );
+        }
+        const repositoryPage = source.url.replace(/\.git$/u, "");
+        const ref =
+          typeof source.ref === "string" && source.ref.trim()
+            ? source.ref
+            : SOURCE_DEFAULT_BRANCH;
+        homepage = `${repositoryPage}/tree/${ref}/${source.path}`;
+      }
+
+      const name = escapeMarkdownTableCell(pluginName);
+      const link = escapeLinkDestination(homepage);
+      const description = claudePlugin
+        ? escapeMarkdownTableCell(claudePlugin.description.replace(/\.$/, ""))
+        : "—";
+      const claudeAvailability = claudePlugin === undefined ? "—" : "✅";
+      const codexAvailability = codexPlugin === undefined ? "—" : "✅";
+      return `| [\`${name}\`](${link}) | ${claudeAvailability} | ${codexAvailability} | ${description} |`;
+    });
   return [
     "| Plugin | Claude Code | Codex | Description |",
     "| --- | --- | --- | --- |",
@@ -309,26 +288,15 @@ export function replacePluginTable(readme, table) {
   if (begin === -1 || end === -1 || end < begin) {
     throw new Error("PLUGINS-TABLE markers not found in README.md");
   }
-
   const afterBeginLine = readme.indexOf("\n", begin);
   if (afterBeginLine === -1 || afterBeginLine > end) {
     throw new Error("PLUGINS-TABLE begin marker must occupy its own line");
   }
-
-  return (
-    readme.slice(0, afterBeginLine + 1) +
-    "\n" +
-    table +
-    "\n\n" +
-    readme.slice(end)
-  );
+  return `${readme.slice(0, afterBeginLine + 1)}\n${table}\n\n${readme.slice(end)}`;
 }
 
 export function buildReadme(readme, claudePlugins, codexPlugins) {
-  return replacePluginTable(
-    readme,
-    renderPluginTable(claudePlugins, codexPlugins),
-  );
+  return replacePluginTable(readme, renderPluginTable(claudePlugins, codexPlugins));
 }
 
 export function validateCatalogHealth({ catalogRoot, sourceRepo }) {
@@ -343,111 +311,18 @@ export function validateCatalogHealth({ catalogRoot, sourceRepo }) {
     "Codex catalog",
     errors,
   );
-  // A source repo without a registry file is a documented, valid state (see
-  // marketplace-sync-check): every plugin is Claude-only and the Codex catalog
-  // must be empty. Only a present-but-unreadable registry is an error.
-  const registryPath = join(sourceRepo, REGISTRY_PATH);
-  const registryPresent = existsSync(registryPath);
-  const registry = registryPresent
-    ? readJson(registryPath, "Source registry", errors)
-    : undefined;
   const readme = readText(join(catalogRoot, README_PATH), "README", errors);
 
   validateCatalogIdentity(claudeCatalog, "Claude catalog", errors);
   validateCatalogIdentity(codexCatalog, "Codex catalog", errors);
+  validateCodexCatalogInterface(codexCatalog, errors);
 
   const claudePlugins = getPlugins(claudeCatalog, "Claude catalog", errors);
   const codexPlugins = getPlugins(codexCatalog, "Codex catalog", errors);
-  const claudeNames = validateCatalogNames(
-    claudePlugins,
-    "Claude catalog",
-    errors,
-  );
-  const codexNames = validateCatalogNames(codexPlugins, "Codex catalog", errors);
-  const { claudeOnlyPlugins, dualHarnessPlugins } = validateRegistry(
-    registry,
-    errors,
-  );
-
-  const claudeNameSet = new Set(claudeNames);
-  const codexNameSet = new Set(codexNames);
-  const classifiedNames = new Set([
-    ...Object.keys(dualHarnessPlugins),
-    ...Object.keys(claudeOnlyPlugins),
-  ]);
-  const manifestNames = registryPresent ? classifiedNames : claudeNameSet;
+  validateCatalogNames(claudePlugins, "Claude catalog", errors);
+  validateCatalogNames(codexPlugins, "Codex catalog", errors);
   const claudeManifests = new Map();
-
-  for (const pluginName of [...manifestNames].sort(comparePluginNames)) {
-    const manifestRoot = join(sourceRepo, "plugins", pluginName);
-    const claudeManifest = readJson(
-      join(manifestRoot, ".claude-plugin/plugin.json"),
-      `Claude source manifest for "${pluginName}"`,
-      errors,
-    );
-    validateManifest(
-      claudeManifest,
-      pluginName,
-      `Claude source manifest for "${pluginName}"`,
-      errors,
-    );
-    claudeManifests.set(pluginName, claudeManifest);
-
-    if (Object.hasOwn(dualHarnessPlugins, pluginName)) {
-      const codexManifest = readJson(
-        join(manifestRoot, ".codex-plugin/plugin.json"),
-        `Codex source manifest for "${pluginName}"`,
-        errors,
-      );
-      validateManifest(
-        codexManifest,
-        pluginName,
-        `Codex source manifest for "${pluginName}"`,
-        errors,
-      );
-      if (isObject(claudeManifest) && isObject(codexManifest)) {
-        for (const field of ["name", "version", "description", "homepage"]) {
-          compareField(
-            errors,
-            `Codex source manifest for "${pluginName}" ${field}`,
-            codexManifest[field],
-            claudeManifest[field],
-          );
-        }
-      }
-    }
-  }
-
-  if (registryPresent) {
-    for (const pluginName of claudeNames) {
-      const isDualHarness = Object.hasOwn(dualHarnessPlugins, pluginName);
-      const isClaudeOnly = Object.hasOwn(claudeOnlyPlugins, pluginName);
-      if (!isDualHarness && !isClaudeOnly) {
-        errors.push(`Published Claude plugin "${pluginName}" is unclassified.`);
-      }
-    }
-  }
-
-  const expectedCodexNames = new Set(
-    claudeNames.filter((name) => Object.hasOwn(dualHarnessPlugins, name)),
-  );
-  for (const pluginName of expectedCodexNames) {
-    if (!codexNameSet.has(pluginName)) {
-      errors.push(
-        `Codex catalog is missing dual-harness plugin "${pluginName}".`,
-      );
-    }
-  }
-  for (const pluginName of codexNames) {
-    if (!expectedCodexNames.has(pluginName)) {
-      errors.push(`Codex catalog has unexpected plugin "${pluginName}".`);
-    }
-    if (!claudeNameSet.has(pluginName)) {
-      errors.push(
-        `Codex plugin "${pluginName}" is not published for Claude Code.`,
-      );
-    }
-  }
+  const codexManifests = new Map();
 
   for (const plugin of claudePlugins) {
     if (!isObject(plugin) || typeof plugin.name !== "string") {
@@ -455,14 +330,16 @@ export function validateCatalogHealth({ catalogRoot, sourceRepo }) {
     }
     const label = `Claude catalog plugin "${plugin.name}"`;
     validateSource(plugin.source, plugin.name, false, label, errors);
-    const manifest = claudeManifests.get(plugin.name);
+    const manifestLabel = `Claude source manifest for "${plugin.name}"`;
+    const manifest = readJson(
+      join(sourceRepo, "plugins", plugin.name, ".claude-plugin/plugin.json"),
+      manifestLabel,
+      errors,
+    );
+    validateManifest(manifest, plugin.name, manifestLabel, errors);
+    claudeManifests.set(plugin.name, manifest);
     if (isObject(manifest)) {
-      compareField(
-        errors,
-        `${label} description`,
-        plugin.description,
-        manifest.description,
-      );
+      compareField(errors, `${label} description`, plugin.description, manifest.description);
       compareField(
         errors,
         `${label} homepage`,
@@ -478,15 +355,6 @@ export function validateCatalogHealth({ catalogRoot, sourceRepo }) {
     }
     const label = `Codex catalog plugin "${plugin.name}"`;
     validateSource(plugin.source, plugin.name, true, label, errors);
-    const classification = dualHarnessPlugins[plugin.name];
-    if (isObject(classification)) {
-      compareField(
-        errors,
-        `${label} category`,
-        plugin.category,
-        classification.category,
-      );
-    }
     if (!isObject(plugin.policy)) {
       errors.push(`${label} policy must be an object.`);
     } else {
@@ -503,11 +371,35 @@ export function validateCatalogHealth({ catalogRoot, sourceRepo }) {
         EXPECTED_CODEX_POLICY.authentication,
       );
     }
+    const manifestLabel = `Codex source manifest for "${plugin.name}"`;
+    const manifest = readJson(
+      join(sourceRepo, "plugins", plugin.name, ".codex-plugin/plugin.json"),
+      manifestLabel,
+      errors,
+    );
+    validateManifest(manifest, plugin.name, manifestLabel, errors);
+    codexManifests.set(plugin.name, manifest);
+    const category = codexCategory(manifest, manifestLabel, errors);
+    if (category !== undefined) {
+      compareField(errors, `${label} category`, plugin.category, category);
+    }
   }
 
-  // Only judge README staleness against catalogs that actually parsed into
-  // plugin arrays; otherwise the "regenerate" advice would point at inputs the
-  // writer cannot process.
+  for (const [pluginName, claudeManifest] of claudeManifests) {
+    const codexManifest = codexManifests.get(pluginName);
+    if (
+      isObject(claudeManifest) &&
+      isObject(codexManifest) &&
+      claudeManifest.version !== codexManifest.version
+    ) {
+      errors.push(
+        `Source manifests for "${pluginName}" must use the same version; ` +
+          `found Claude ${JSON.stringify(claudeManifest.version)} and ` +
+          `Codex ${JSON.stringify(codexManifest.version)}.`,
+      );
+    }
+  }
+
   const catalogsRenderable =
     Array.isArray(claudeCatalog?.plugins) && Array.isArray(codexCatalog?.plugins);
   if (typeof readme === "string" && catalogsRenderable) {
@@ -519,17 +411,12 @@ export function validateCatalogHealth({ catalogRoot, sourceRepo }) {
         );
       }
     } catch (error) {
-      errors.push(
-        `README plugins table could not be generated: ${error.message}`,
-      );
+      errors.push(`README plugins table could not be generated: ${error.message}`);
     }
   }
 
   return {
-    counts: {
-      claude: claudePlugins.length,
-      codex: codexPlugins.length,
-    },
+    counts: { claude: claudePlugins.length, codex: codexPlugins.length },
     errors,
   };
 }
