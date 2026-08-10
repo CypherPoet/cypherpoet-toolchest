@@ -45,7 +45,7 @@ jobs:
           path: custom-agent-skills
           filter: blob:none
           sparse-checkout: |
-            /scripts/
+            /plugin-registry.json
             /plugins/*/.claude-plugin/
             /plugins/*/.codex-plugin/
           sparse-checkout-cone-mode: false

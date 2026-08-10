@@ -4,7 +4,7 @@ import { join } from "node:path";
 export const CLAUDE_CATALOG_PATH = ".claude-plugin/marketplace.json";
 export const CODEX_CATALOG_PATH = ".agents/plugins/marketplace.json";
 export const README_PATH = "README.md";
-export const REGISTRY_PATH = "scripts/plugin-registry.json";
+export const REGISTRY_PATH = "plugin-registry.json";
 
 // These constants are this repo's half of the contract that the source repo's
 // marketplace-publish skill writes (it resolves the default branch dynamically;

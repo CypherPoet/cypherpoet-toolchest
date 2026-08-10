@@ -73,7 +73,7 @@ async function createFixture(t) {
     catalogRoot,
     ".agents/plugins/marketplace.json",
   );
-  const registryPath = join(sourceRepo, "scripts/plugin-registry.json");
+  const registryPath = join(sourceRepo, "plugin-registry.json");
   const readmePath = join(catalogRoot, "README.md");
 
   const dualNames = Array.from(
