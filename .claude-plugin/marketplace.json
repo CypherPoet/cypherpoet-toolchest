@@ -7,254 +7,254 @@
   },
   "plugins": [
     {
-      "name": "cypherpoet-app-store-connect-kit",
+      "name": "app-store-connect-kit",
       "source": {
         "source": "git-subdir",
         "url": "https://github.com/CypherPoet/custom-agent-skills.git",
-        "path": "plugins/cypherpoet-app-store-connect-kit"
+        "path": "plugins/app-store-connect-kit"
       },
       "description": "Hands-on App Store Connect submission workflow and console navigation.",
-      "homepage": "https://github.com/CypherPoet/custom-agent-skills/tree/main/plugins/cypherpoet-app-store-connect-kit"
+      "homepage": "https://github.com/CypherPoet/custom-agent-skills/tree/main/plugins/app-store-connect-kit"
     },
     {
-      "name": "cypherpoet-apple-app-icons",
+      "name": "apple-app-icons",
       "source": {
         "source": "git-subdir",
         "url": "https://github.com/CypherPoet/custom-agent-skills.git",
-        "path": "plugins/cypherpoet-apple-app-icons"
+        "path": "plugins/apple-app-icons"
       },
       "description": "Apple app icons end to end: design one that converts in the App Store (tap-through, audit, A/B testing) and ship it correctly — Icon Composer Liquid Glass .icon plus an appiconset fallback for older OS versions.",
-      "homepage": "https://github.com/CypherPoet/custom-agent-skills/tree/main/plugins/cypherpoet-apple-app-icons"
+      "homepage": "https://github.com/CypherPoet/custom-agent-skills/tree/main/plugins/apple-app-icons"
     },
     {
-      "name": "cypherpoet-apple-app-store-screenshots",
+      "name": "apple-app-store-screenshots",
       "source": {
         "source": "git-subdir",
         "url": "https://github.com/CypherPoet/custom-agent-skills.git",
-        "path": "plugins/cypherpoet-apple-app-store-screenshots"
+        "path": "plugins/apple-app-store-screenshots"
       },
       "description": "Apple App Store screenshot and app preview specifications.",
-      "homepage": "https://github.com/CypherPoet/custom-agent-skills/tree/main/plugins/cypherpoet-apple-app-store-screenshots"
+      "homepage": "https://github.com/CypherPoet/custom-agent-skills/tree/main/plugins/apple-app-store-screenshots"
     },
     {
-      "name": "cypherpoet-apple-human-interface-guidelines",
+      "name": "apple-hig",
       "source": {
         "source": "git-subdir",
         "url": "https://github.com/CypherPoet/custom-agent-skills.git",
-        "path": "plugins/cypherpoet-apple-human-interface-guidelines"
+        "path": "plugins/apple-hig"
       },
       "description": "Thorough distillation of Apple's complete Human Interface Guidelines across all six platforms (iOS, iPadOS, macOS, tvOS, visionOS, watchOS) — component-by-component best practices, hard specs (tap targets, type sizes, color tokens), per-platform deltas, and choose-the-right-component decision tables, with a synced reference corpus that tracks Apple's updates.",
-      "homepage": "https://github.com/CypherPoet/custom-agent-skills/tree/main/plugins/cypherpoet-apple-human-interface-guidelines"
+      "homepage": "https://github.com/CypherPoet/custom-agent-skills/tree/main/plugins/apple-hig"
     },
     {
-      "name": "cypherpoet-blender-kit",
+      "name": "blender-kit",
       "source": {
         "source": "git-subdir",
         "url": "https://github.com/CypherPoet/custom-agent-skills.git",
-        "path": "plugins/cypherpoet-blender-kit"
+        "path": "plugins/blender-kit"
       },
       "description": "Blender mastery — modeling, materials, rigging, geometry nodes, rendering, and export via bpy, driven through the official Blender MCP server or the headless CLI.",
-      "homepage": "https://github.com/CypherPoet/custom-agent-skills/tree/main/plugins/cypherpoet-blender-kit"
+      "homepage": "https://github.com/CypherPoet/custom-agent-skills/tree/main/plugins/blender-kit"
     },
     {
-      "name": "cypherpoet-changelog-maintenance",
+      "name": "changelog-maintenance",
       "source": {
         "source": "git-subdir",
         "url": "https://github.com/CypherPoet/custom-agent-skills.git",
-        "path": "plugins/cypherpoet-changelog-maintenance"
+        "path": "plugins/changelog-maintenance"
       },
       "description": "Maintain a project's CHANGELOG.md in Keep-a-Changelog format.",
-      "homepage": "https://github.com/CypherPoet/custom-agent-skills/tree/main/plugins/cypherpoet-changelog-maintenance"
+      "homepage": "https://github.com/CypherPoet/custom-agent-skills/tree/main/plugins/changelog-maintenance"
     },
     {
-      "name": "cypherpoet-claude-docs-search",
+      "name": "claude-docs-search",
       "source": {
         "source": "git-subdir",
         "url": "https://github.com/CypherPoet/custom-agent-skills.git",
-        "path": "plugins/cypherpoet-claude-docs-search"
+        "path": "plugins/claude-docs-search"
       },
       "description": "Look up answers about Claude Code features and behavior in the official Claude Code documentation.",
-      "homepage": "https://github.com/CypherPoet/custom-agent-skills/tree/main/plugins/cypherpoet-claude-docs-search"
+      "homepage": "https://github.com/CypherPoet/custom-agent-skills/tree/main/plugins/claude-docs-search"
     },
     {
-      "name": "cypherpoet-claude-memory-consolidation",
+      "name": "claude-memory-consolidation",
       "source": {
         "source": "git-subdir",
         "url": "https://github.com/CypherPoet/custom-agent-skills.git",
-        "path": "plugins/cypherpoet-claude-memory-consolidation"
+        "path": "plugins/claude-memory-consolidation"
       },
       "description": "Audit and consolidate Claude's per-project auto-memory directory, deduping, repairing, and pruning with per-cluster approval.",
-      "homepage": "https://github.com/CypherPoet/custom-agent-skills/tree/main/plugins/cypherpoet-claude-memory-consolidation"
+      "homepage": "https://github.com/CypherPoet/custom-agent-skills/tree/main/plugins/claude-memory-consolidation"
     },
     {
-      "name": "cypherpoet-emoji-commits",
+      "name": "emoji-commits",
       "source": {
         "source": "git-subdir",
         "url": "https://github.com/CypherPoet/custom-agent-skills.git",
-        "path": "plugins/cypherpoet-emoji-commits"
+        "path": "plugins/emoji-commits"
       },
       "description": "Write expressive git commit messages with Gitmoji.",
-      "homepage": "https://github.com/CypherPoet/custom-agent-skills/tree/main/plugins/cypherpoet-emoji-commits"
+      "homepage": "https://github.com/CypherPoet/custom-agent-skills/tree/main/plugins/emoji-commits"
     },
     {
-      "name": "cypherpoet-excalidraw-kit",
+      "name": "excalidraw-kit",
       "source": {
         "source": "git-subdir",
         "url": "https://github.com/CypherPoet/custom-agent-skills.git",
-        "path": "plugins/cypherpoet-excalidraw-kit"
+        "path": "plugins/excalidraw-kit"
       },
       "description": "Comprehensive Excalidraw mastery: authoring .excalidraw scene files by hand (the JSON format, element model, arrow/text binding, and a diagrams-that-argue design methodology), plus the @excalidraw/excalidraw developer API (React component, initialData, the convertToExcalidrawElements skeleton API, restore, SVG/PNG/clipboard export, and Mermaid-to-Excalidraw), shipped with scripts to validate a scene, render it to PNG, and insert icon-library elements — grounded in the official Excalidraw documentation.",
-      "homepage": "https://github.com/CypherPoet/custom-agent-skills/tree/main/plugins/cypherpoet-excalidraw-kit"
+      "homepage": "https://github.com/CypherPoet/custom-agent-skills/tree/main/plugins/excalidraw-kit"
     },
     {
-      "name": "cypherpoet-expo-kit",
+      "name": "expo-kit",
       "source": {
         "source": "git-subdir",
         "url": "https://github.com/CypherPoet/custom-agent-skills.git",
-        "path": "plugins/cypherpoet-expo-kit"
+        "path": "plugins/expo-kit"
       },
       "description": "Expo / React Native prototyping.",
-      "homepage": "https://github.com/CypherPoet/custom-agent-skills/tree/main/plugins/cypherpoet-expo-kit"
+      "homepage": "https://github.com/CypherPoet/custom-agent-skills/tree/main/plugins/expo-kit"
     },
     {
-      "name": "cypherpoet-git-flow",
+      "name": "git-flow",
       "source": {
         "source": "git-subdir",
         "url": "https://github.com/CypherPoet/custom-agent-skills.git",
-        "path": "plugins/cypherpoet-git-flow"
+        "path": "plugins/git-flow"
       },
       "description": "Bundle of git commit and changelog hygiene plugins: emoji commits and changelog maintenance.",
-      "homepage": "https://github.com/CypherPoet/custom-agent-skills/tree/main/plugins/cypherpoet-git-flow"
+      "homepage": "https://github.com/CypherPoet/custom-agent-skills/tree/main/plugins/git-flow"
     },
     {
-      "name": "cypherpoet-git-hygiene",
+      "name": "git-hygiene",
       "source": {
         "source": "git-subdir",
         "url": "https://github.com/CypherPoet/custom-agent-skills.git",
-        "path": "plugins/cypherpoet-git-hygiene"
+        "path": "plugins/git-hygiene"
       },
       "description": "Keep local git state tidy: sync branches with the remote, and clean up stale branches and worktrees with per-item approval.",
-      "homepage": "https://github.com/CypherPoet/custom-agent-skills/tree/main/plugins/cypherpoet-git-hygiene"
+      "homepage": "https://github.com/CypherPoet/custom-agent-skills/tree/main/plugins/git-hygiene"
     },
     {
-      "name": "cypherpoet-google-filament-kit",
+      "name": "google-filament-kit",
       "source": {
         "source": "git-subdir",
         "url": "https://github.com/CypherPoet/custom-agent-skills.git",
-        "path": "plugins/cypherpoet-google-filament-kit"
+        "path": "plugins/google-filament-kit"
       },
       "description": "Comprehensive working knowledge of Google Filament, the real-time physically-based rendering engine — the PBR material model and lighting/IBL, the material definition language and matc compiler, the core engine API (Engine/Scene/View/Renderer/Camera, resources, gltfio), and per-binding setup for C++, Web (JS/WASM), and Android, distilled from the official documentation with a synced reference corpus that tracks Filament releases.",
-      "homepage": "https://github.com/CypherPoet/custom-agent-skills/tree/main/plugins/cypherpoet-google-filament-kit"
+      "homepage": "https://github.com/CypherPoet/custom-agent-skills/tree/main/plugins/google-filament-kit"
     },
     {
-      "name": "cypherpoet-marketplace-kit",
+      "name": "marketplace-kit",
       "source": {
         "source": "git-subdir",
         "url": "https://github.com/CypherPoet/custom-agent-skills.git",
-        "path": "plugins/cypherpoet-marketplace-kit"
+        "path": "plugins/marketplace-kit"
       },
       "description": "Maintainer toolkit for running a plugin marketplace with Claude Code and Codex catalogs — publish plugins, audit marketplace and catalog sync, and regenerate the local catalog.",
-      "homepage": "https://github.com/CypherPoet/custom-agent-skills/tree/main/plugins/cypherpoet-marketplace-kit"
+      "homepage": "https://github.com/CypherPoet/custom-agent-skills/tree/main/plugins/marketplace-kit"
     },
     {
-      "name": "cypherpoet-mobile-dev",
+      "name": "mobile-dev",
       "source": {
         "source": "git-subdir",
         "url": "https://github.com/CypherPoet/custom-agent-skills.git",
-        "path": "plugins/cypherpoet-mobile-dev"
+        "path": "plugins/mobile-dev"
       },
       "description": "iOS App Store publishing best practices.",
-      "homepage": "https://github.com/CypherPoet/custom-agent-skills/tree/main/plugins/cypherpoet-mobile-dev"
+      "homepage": "https://github.com/CypherPoet/custom-agent-skills/tree/main/plugins/mobile-dev"
     },
     {
-      "name": "cypherpoet-obsidian-plugin-kit",
+      "name": "obsidian-plugin-kit",
       "source": {
         "source": "git-subdir",
         "url": "https://github.com/CypherPoet/custom-agent-skills.git",
-        "path": "plugins/cypherpoet-obsidian-plugin-kit"
+        "path": "plugins/obsidian-plugin-kit"
       },
       "description": "Comprehensive Obsidian plugin development: scaffolding from the official sample-plugin template, the vault/editor/workspace APIs, lifecycle and memory safety, settings tabs (classic and the 1.13 declarative API), mobile and pop-out support, eslint-plugin-obsidianmd review, and community-directory submission — grounded in the official Obsidian developer docs, with a dependency-free manifest/release preflight validator.",
-      "homepage": "https://github.com/CypherPoet/custom-agent-skills/tree/main/plugins/cypherpoet-obsidian-plugin-kit"
+      "homepage": "https://github.com/CypherPoet/custom-agent-skills/tree/main/plugins/obsidian-plugin-kit"
     },
     {
-      "name": "cypherpoet-react-three-fiber-kit",
+      "name": "react-three-fiber-kit",
       "source": {
         "source": "git-subdir",
         "url": "https://github.com/CypherPoet/custom-agent-skills.git",
-        "path": "plugins/cypherpoet-react-three-fiber-kit"
+        "path": "plugins/react-three-fiber-kit"
       },
       "description": "React Three Fiber (R3F) + drei tooling for declarative Three.js in React.",
-      "homepage": "https://github.com/CypherPoet/custom-agent-skills/tree/main/plugins/cypherpoet-react-three-fiber-kit"
+      "homepage": "https://github.com/CypherPoet/custom-agent-skills/tree/main/plugins/react-three-fiber-kit"
     },
     {
-      "name": "cypherpoet-session-handoff",
+      "name": "session-handoff",
       "source": {
         "source": "git-subdir",
         "url": "https://github.com/CypherPoet/custom-agent-skills.git",
-        "path": "plugins/cypherpoet-session-handoff"
+        "path": "plugins/session-handoff"
       },
       "description": "Write a structured handoff document so a fresh agent can resume long-running work without losing context.",
-      "homepage": "https://github.com/CypherPoet/custom-agent-skills/tree/main/plugins/cypherpoet-session-handoff"
+      "homepage": "https://github.com/CypherPoet/custom-agent-skills/tree/main/plugins/session-handoff"
     },
     {
-      "name": "cypherpoet-session-harvest",
+      "name": "session-harvest",
       "source": {
         "source": "git-subdir",
         "url": "https://github.com/CypherPoet/custom-agent-skills.git",
-        "path": "plugins/cypherpoet-session-harvest"
+        "path": "plugins/session-harvest"
       },
       "description": "Harvest a session's learnings into their right homes: a memory, a suggested repo edit (CLAUDE.md/AGENTS.md, docs, or a hook), or a PR that improves one of your own agent skills.",
-      "homepage": "https://github.com/CypherPoet/custom-agent-skills/tree/main/plugins/cypherpoet-session-harvest"
+      "homepage": "https://github.com/CypherPoet/custom-agent-skills/tree/main/plugins/session-harvest"
     },
     {
-      "name": "cypherpoet-sf-symbols-kit",
+      "name": "sf-symbols-kit",
       "source": {
         "source": "git-subdir",
         "url": "https://github.com/CypherPoet/custom-agent-skills.git",
-        "path": "plugins/cypherpoet-sf-symbols-kit"
+        "path": "plugins/sf-symbols-kit"
       },
       "description": "Apple SF Symbols end to end: find the right symbol with natural language, export clean recolorable SVGs at any of the 9 weights, browse an HTML gallery, build full icon sets, and convert your own SVG art into importable custom SF Symbol templates.",
-      "homepage": "https://github.com/CypherPoet/custom-agent-skills/tree/main/plugins/cypherpoet-sf-symbols-kit"
+      "homepage": "https://github.com/CypherPoet/custom-agent-skills/tree/main/plugins/sf-symbols-kit"
     },
     {
-      "name": "cypherpoet-svg-tools",
+      "name": "svg-tools",
       "source": {
         "source": "git-subdir",
         "url": "https://github.com/CypherPoet/custom-agent-skills.git",
-        "path": "plugins/cypherpoet-svg-tools"
+        "path": "plugins/svg-tools"
       },
       "description": "SVG optimization and cleanup.",
-      "homepage": "https://github.com/CypherPoet/custom-agent-skills/tree/main/plugins/cypherpoet-svg-tools"
+      "homepage": "https://github.com/CypherPoet/custom-agent-skills/tree/main/plugins/svg-tools"
     },
     {
-      "name": "cypherpoet-swift-xcode-kit",
+      "name": "swift-xcode-kit",
       "source": {
         "source": "git-subdir",
         "url": "https://github.com/CypherPoet/custom-agent-skills.git",
-        "path": "plugins/cypherpoet-swift-xcode-kit"
+        "path": "plugins/swift-xcode-kit"
       },
       "description": "Swift and Xcode development kit: SwiftUI best practices and 2027 SDK migration, UIKit multi-window modernization, XCTest-to-Swift-Testing migration, security-hardening audits of Xcode build settings, C -fbounds-safety guidance, and on-device/simulator UI verification.",
-      "homepage": "https://github.com/CypherPoet/custom-agent-skills/tree/main/plugins/cypherpoet-swift-xcode-kit"
+      "homepage": "https://github.com/CypherPoet/custom-agent-skills/tree/main/plugins/swift-xcode-kit"
     },
     {
-      "name": "cypherpoet-threejs-kit",
+      "name": "threejs-kit",
       "source": {
         "source": "git-subdir",
         "url": "https://github.com/CypherPoet/custom-agent-skills.git",
-        "path": "plugins/cypherpoet-threejs-kit"
+        "path": "plugins/threejs-kit"
       },
       "description": "Three.js / WebGPU / WebGL tooling.",
-      "homepage": "https://github.com/CypherPoet/custom-agent-skills/tree/main/plugins/cypherpoet-threejs-kit"
+      "homepage": "https://github.com/CypherPoet/custom-agent-skills/tree/main/plugins/threejs-kit"
     },
     {
-      "name": "cypherpoet-webgl-kit",
+      "name": "webgl-kit",
       "source": {
         "source": "git-subdir",
         "url": "https://github.com/CypherPoet/custom-agent-skills.git",
-        "path": "plugins/cypherpoet-webgl-kit"
+        "path": "plugins/webgl-kit"
       },
       "description": "Raw WebGL2 + GLSL shader tooling.",
-      "homepage": "https://github.com/CypherPoet/custom-agent-skills/tree/main/plugins/cypherpoet-webgl-kit"
+      "homepage": "https://github.com/CypherPoet/custom-agent-skills/tree/main/plugins/webgl-kit"
     }
   ]
 }
