@@ -5,11 +5,11 @@
   },
   "plugins": [
     {
-      "name": "cypherpoet-app-store-connect-kit",
+      "name": "app-store-connect-kit",
       "source": {
         "source": "git-subdir",
         "url": "https://github.com/CypherPoet/custom-agent-skills.git",
-        "path": "plugins/cypherpoet-app-store-connect-kit",
+        "path": "plugins/app-store-connect-kit",
         "ref": "main"
       },
       "policy": {
@@ -19,11 +19,11 @@
       "category": "Developer Tools"
     },
     {
-      "name": "cypherpoet-apple-app-icons",
+      "name": "apple-app-icons",
       "source": {
         "source": "git-subdir",
         "url": "https://github.com/CypherPoet/custom-agent-skills.git",
-        "path": "plugins/cypherpoet-apple-app-icons",
+        "path": "plugins/apple-app-icons",
         "ref": "main"
       },
       "policy": {
@@ -33,11 +33,11 @@
       "category": "Creativity"
     },
     {
-      "name": "cypherpoet-apple-app-store-screenshots",
+      "name": "apple-app-store-screenshots",
       "source": {
         "source": "git-subdir",
         "url": "https://github.com/CypherPoet/custom-agent-skills.git",
-        "path": "plugins/cypherpoet-apple-app-store-screenshots",
+        "path": "plugins/apple-app-store-screenshots",
         "ref": "main"
       },
       "policy": {
@@ -47,11 +47,11 @@
       "category": "Developer Tools"
     },
     {
-      "name": "cypherpoet-apple-human-interface-guidelines",
+      "name": "apple-hig",
       "source": {
         "source": "git-subdir",
         "url": "https://github.com/CypherPoet/custom-agent-skills.git",
-        "path": "plugins/cypherpoet-apple-human-interface-guidelines",
+        "path": "plugins/apple-hig",
         "ref": "main"
       },
       "policy": {
@@ -61,11 +61,11 @@
       "category": "Creativity"
     },
     {
-      "name": "cypherpoet-blender-kit",
+      "name": "blender-kit",
       "source": {
         "source": "git-subdir",
         "url": "https://github.com/CypherPoet/custom-agent-skills.git",
-        "path": "plugins/cypherpoet-blender-kit",
+        "path": "plugins/blender-kit",
         "ref": "main"
       },
       "policy": {
@@ -75,11 +75,11 @@
       "category": "Developer Tools"
     },
     {
-      "name": "cypherpoet-changelog-maintenance",
+      "name": "changelog-maintenance",
       "source": {
         "source": "git-subdir",
         "url": "https://github.com/CypherPoet/custom-agent-skills.git",
-        "path": "plugins/cypherpoet-changelog-maintenance",
+        "path": "plugins/changelog-maintenance",
         "ref": "main"
       },
       "policy": {
@@ -89,11 +89,11 @@
       "category": "Developer Tools"
     },
     {
-      "name": "cypherpoet-emoji-commits",
+      "name": "emoji-commits",
       "source": {
         "source": "git-subdir",
         "url": "https://github.com/CypherPoet/custom-agent-skills.git",
-        "path": "plugins/cypherpoet-emoji-commits",
+        "path": "plugins/emoji-commits",
         "ref": "main"
       },
       "policy": {
@@ -103,11 +103,11 @@
       "category": "Developer Tools"
     },
     {
-      "name": "cypherpoet-excalidraw-kit",
+      "name": "excalidraw-kit",
       "source": {
         "source": "git-subdir",
         "url": "https://github.com/CypherPoet/custom-agent-skills.git",
-        "path": "plugins/cypherpoet-excalidraw-kit",
+        "path": "plugins/excalidraw-kit",
         "ref": "main"
       },
       "policy": {
@@ -117,11 +117,11 @@
       "category": "Creativity"
     },
     {
-      "name": "cypherpoet-expo-kit",
+      "name": "expo-kit",
       "source": {
         "source": "git-subdir",
         "url": "https://github.com/CypherPoet/custom-agent-skills.git",
-        "path": "plugins/cypherpoet-expo-kit",
+        "path": "plugins/expo-kit",
         "ref": "main"
       },
       "policy": {
@@ -131,11 +131,11 @@
       "category": "Developer Tools"
     },
     {
-      "name": "cypherpoet-git-flow",
+      "name": "git-flow",
       "source": {
         "source": "git-subdir",
         "url": "https://github.com/CypherPoet/custom-agent-skills.git",
-        "path": "plugins/cypherpoet-git-flow",
+        "path": "plugins/git-flow",
         "ref": "main"
       },
       "policy": {
@@ -145,11 +145,11 @@
       "category": "Developer Tools"
     },
     {
-      "name": "cypherpoet-git-hygiene",
+      "name": "git-hygiene",
       "source": {
         "source": "git-subdir",
         "url": "https://github.com/CypherPoet/custom-agent-skills.git",
-        "path": "plugins/cypherpoet-git-hygiene",
+        "path": "plugins/git-hygiene",
         "ref": "main"
       },
       "policy": {
@@ -159,11 +159,11 @@
       "category": "Developer Tools"
     },
     {
-      "name": "cypherpoet-google-filament-kit",
+      "name": "google-filament-kit",
       "source": {
         "source": "git-subdir",
         "url": "https://github.com/CypherPoet/custom-agent-skills.git",
-        "path": "plugins/cypherpoet-google-filament-kit",
+        "path": "plugins/google-filament-kit",
         "ref": "main"
       },
       "policy": {
@@ -173,11 +173,11 @@
       "category": "Developer Tools"
     },
     {
-      "name": "cypherpoet-marketplace-kit",
+      "name": "marketplace-kit",
       "source": {
         "source": "git-subdir",
         "url": "https://github.com/CypherPoet/custom-agent-skills.git",
-        "path": "plugins/cypherpoet-marketplace-kit",
+        "path": "plugins/marketplace-kit",
         "ref": "main"
       },
       "policy": {
@@ -187,11 +187,11 @@
       "category": "Developer Tools"
     },
     {
-      "name": "cypherpoet-mobile-dev",
+      "name": "mobile-dev",
       "source": {
         "source": "git-subdir",
         "url": "https://github.com/CypherPoet/custom-agent-skills.git",
-        "path": "plugins/cypherpoet-mobile-dev",
+        "path": "plugins/mobile-dev",
         "ref": "main"
       },
       "policy": {
@@ -201,11 +201,11 @@
       "category": "Developer Tools"
     },
     {
-      "name": "cypherpoet-obsidian-plugin-kit",
+      "name": "obsidian-plugin-kit",
       "source": {
         "source": "git-subdir",
         "url": "https://github.com/CypherPoet/custom-agent-skills.git",
-        "path": "plugins/cypherpoet-obsidian-plugin-kit",
+        "path": "plugins/obsidian-plugin-kit",
         "ref": "main"
       },
       "policy": {
@@ -215,11 +215,11 @@
       "category": "Developer Tools"
     },
     {
-      "name": "cypherpoet-react-three-fiber-kit",
+      "name": "react-three-fiber-kit",
       "source": {
         "source": "git-subdir",
         "url": "https://github.com/CypherPoet/custom-agent-skills.git",
-        "path": "plugins/cypherpoet-react-three-fiber-kit",
+        "path": "plugins/react-three-fiber-kit",
         "ref": "main"
       },
       "policy": {
@@ -229,11 +229,11 @@
       "category": "Developer Tools"
     },
     {
-      "name": "cypherpoet-session-handoff",
+      "name": "session-handoff",
       "source": {
         "source": "git-subdir",
         "url": "https://github.com/CypherPoet/custom-agent-skills.git",
-        "path": "plugins/cypherpoet-session-handoff",
+        "path": "plugins/session-handoff",
         "ref": "main"
       },
       "policy": {
@@ -243,11 +243,11 @@
       "category": "Productivity"
     },
     {
-      "name": "cypherpoet-session-harvest",
+      "name": "session-harvest",
       "source": {
         "source": "git-subdir",
         "url": "https://github.com/CypherPoet/custom-agent-skills.git",
-        "path": "plugins/cypherpoet-session-harvest",
+        "path": "plugins/session-harvest",
         "ref": "main"
       },
       "policy": {
@@ -257,11 +257,11 @@
       "category": "Productivity"
     },
     {
-      "name": "cypherpoet-sf-symbols-kit",
+      "name": "sf-symbols-kit",
       "source": {
         "source": "git-subdir",
         "url": "https://github.com/CypherPoet/custom-agent-skills.git",
-        "path": "plugins/cypherpoet-sf-symbols-kit",
+        "path": "plugins/sf-symbols-kit",
         "ref": "main"
       },
       "policy": {
@@ -271,11 +271,11 @@
       "category": "Creativity"
     },
     {
-      "name": "cypherpoet-svg-tools",
+      "name": "svg-tools",
       "source": {
         "source": "git-subdir",
         "url": "https://github.com/CypherPoet/custom-agent-skills.git",
-        "path": "plugins/cypherpoet-svg-tools",
+        "path": "plugins/svg-tools",
         "ref": "main"
       },
       "policy": {
@@ -285,11 +285,11 @@
       "category": "Creativity"
     },
     {
-      "name": "cypherpoet-swift-xcode-kit",
+      "name": "swift-xcode-kit",
       "source": {
         "source": "git-subdir",
         "url": "https://github.com/CypherPoet/custom-agent-skills.git",
-        "path": "plugins/cypherpoet-swift-xcode-kit",
+        "path": "plugins/swift-xcode-kit",
         "ref": "main"
       },
       "policy": {
@@ -299,11 +299,11 @@
       "category": "Developer Tools"
     },
     {
-      "name": "cypherpoet-threejs-kit",
+      "name": "threejs-kit",
       "source": {
         "source": "git-subdir",
         "url": "https://github.com/CypherPoet/custom-agent-skills.git",
-        "path": "plugins/cypherpoet-threejs-kit",
+        "path": "plugins/threejs-kit",
         "ref": "main"
       },
       "policy": {
@@ -313,11 +313,11 @@
       "category": "Developer Tools"
     },
     {
-      "name": "cypherpoet-webgl-kit",
+      "name": "webgl-kit",
       "source": {
         "source": "git-subdir",
         "url": "https://github.com/CypherPoet/custom-agent-skills.git",
-        "path": "plugins/cypherpoet-webgl-kit",
+        "path": "plugins/webgl-kit",
         "ref": "main"
       },
       "policy": {
