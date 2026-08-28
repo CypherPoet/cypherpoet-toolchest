@@ -12,6 +12,6 @@
     "validate:claude": "claude plugin validate --strict ."
   },
   "devDependencies": {
-    "@anthropic-ai/claude-code": "2.1.227"
+    "@anthropic-ai/claude-code": "2.1.232"
   }
 }
